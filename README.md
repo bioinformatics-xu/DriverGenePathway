@@ -18,8 +18,7 @@ DriverGene and DriverPathway are two main functions in DriverGenePathway to iden
 
 #### Default data preparation:
 
-Download the default files from and make sure the default files are in your working directory of Rstudio as follows.
-
+Download the default files from [data source](https://1drv.ms/u/s!AjcBl025xjDwbX8vyTEVxc4_Hpg?e=hnSlqR), and make sure the default files are in your working directory of Rstudio as follows.
 ```
 Folder Structure of your working directory of Rstudio
 |__ brca_maf.txt (example mutation data)
