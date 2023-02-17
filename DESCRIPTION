@@ -1,0 +1,34 @@
+Package: DriverGenePathway
+Type: Package
+Title: Identify Driver Genes and Driver Pathways in Cancer based on MutSigCV and Statistical methods
+Version: 0.99.0
+Authors@R: c(person("Xiaolu","Xu", email = "lu.xu@lnnu.edu.cn", role = c("aut","cre")))
+Maintainer: Xiaolu Xu <lu.xu@lnnu.edu.cn>
+Description: DriverGenePathway is an user-friendly R package integrating MutSigCV and statistical methods to identify cancer driver genes and pathways. The theoretical basis of MutSigCV program are integrated into DriverGenePathway, such as mutation categories discovery based on information entropy. Five hypothesis test methods, including beta binomial test, Fisher combined p-value test, likelihood ratio test, convolution test, and projection test are used together to identify the minimal core driver genes. Moreover, de novo methods, which can effectively overcome mutational heterogeneity, are introduced to identify driver pathways.
+Suggests:
+    knitr,
+    rmarkdown,
+    testthat
+BiocViews: Coverage, DriverMutation, SomaticMutation
+Imports:
+    ggplot2,
+    caret,
+    data.table,
+    dplyr,
+    genalg,
+    kernlab,
+    marray,
+    MASS,
+    plyr,
+    stringr,
+    readxl,
+    VennDiagram,
+    ggrepel
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+VignetteBuilder: knitr
+URL: https://github.com/bioinformatics-xu/DriverGenePathway
+BugReports: https://github.com/bioinformatics-xu/DriverGenePathway/issues
+

@@ -1,0 +1,96 @@
+---
+title: "DriverGenePathway"
+subtitle: "An R package for identifying driver gene and driver pathway"
+author: |
+    | Xiaolu Xu
+    |
+    | School of Computer and Information Technology
+    | Liaoning Normal University
+    | Dalian China, 116029
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{DriverGenePathway}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+## 1. Getting started
+
+__Installing the package:__ To install the _DriverGenePathway_ package,  the easiest way is to install using install_github() function as follows:
+
+```{}
+library(devtools)
+install_github("bioinformatics-xu/DriverGenePathway")
+```
+__Loading the package:__ To load the `DriverGenePathway` package in your R session, type `library(DriverGenePathway)`.
+
+__Help files:__  Detailed information on `DriverGenePathway` package functions can be obtained in the help files. For example, to view the help file for the function `DriverGene` in a R session, use `?DriverGene`.
+
+## 2. Introduction
+
+The main purpose of DriverGenePathway is to identify significantly important mutated genes and gene sets (pathways) that are responsible for cancer, called driver genes and driver pathways, thus this package contains two main functions, `DriverGene()` and `DriverPathway()`, aimming respectively at searching driver genes and driver pathways. For `DriverGene()`, we provided 5 hypothesis testing methods to choose from. The process mainly consists of three sections. First the mutation and coverage data are guaranteed available and preprocessed. Then according to the covariate data, the background mutation rate is calculated. Finally the significant genes are screened via hypothesis testing methods. Regarding `DriverPathway()`, a de novo method is employed to search the driver pathway. It models an optimal submatrix function based on coverage and mutual exclusivity, which are basic characteristics of driver pathways. In addition, the submatrix optimization problem (a quadratic programming problem) is solved by genetic algorithm. 
+
+##3. Data input
+
+To run `DriverGene()`, four data sets of a particular cancer and a directory of choromosome files are required. The first data set is the mutation maf data, a data set containing raw information of mutations. The second is the coverage data, containing raw information of coverages. The third data set is the covariate data, which contains information of covariates, and is used for background mutation rate discovery. The fourth is the mutation type dictionary, a data set containing variant mutation types and their correspondings for use. In addition, the chromosome files directory can be either hg19 or hg38. Besides, we provide files corresponding to the default data other than MAF including Coverage, Covariate, MutationDict, and chr_files_directory. If these files are not personalized for input, users should download the above four files and put in the current work directory. As example, small data sets are available in the DriverGenePathway package.
+
+```{r}
+library(DriverGenePathway)
+data(SampleMutationMaf)
+data(SampleCoverage)
+data(SampleDict)
+data(SampleCovariate)
+
+head(M)
+head(C)
+head(dict)
+head(V)
+
+```
+
+As regard to `DriverPathway()`, The input data is a mutation matrix for which a sample is shown below. 
+
+```{r}
+library(DriverGenePathway)
+data(SampleMutationMatrix)
+head.matrix(mutation_matrix)
+```
+
+## 4. Preprocessing input data
+
+First it should be guaranteed that the input data contain necessary information. Then the mutation categories are arrived at through the hidden `preprocessing()` function (users could not call this function alone). This function outputs the preprocessed mutation and coverage data and result mutation categories as txt files. It also generates two plots as pdf files, which show the number of genes of each category and each effect.
+
+<img src="CategoryPlot.pdf" width="500">
+<img src="EffectPlot.pdf" width="500">
+
+## 5. Background mutation rate
+
+After preprocessing, the output data including mutation data and coverage data go into the hidden `BMR()` function in order to get the background mutation rate. The input preOutV refers to covariate data. The parameter `bmr`, which represent the default background mutation rate is set 1.2e-06, could be modified by the `bmr` parameter in `DriverGene()` function. The output of `BMR()` is a list of matrix which is a intermediate result, will then be used in varified specific gene detecting methods.
+
+## 6. Identify driver genes using `DriverGene()` function
+
+There are five hypothesis test methods according to `p_class` parameter, which are all encapsulated in the sigGenes function, i.e. `BB` represents beta binomial distribution test; `FCPT` represents Fisher combined P-value test; `LRT` represents likelihood ratio test; `CT` represents convolution test; `projection` represents projection test method; `allTest` represents the mutual results of all methods. The parameter `sigThreshold` represents the threshhold of q-value to judge if the gene is significant. Here is a sample of the usage of `DriverGene()`, for more information of the function and parameters, see help documentation.
+
+```{}
+DriverGene(
+  M,C,V,dict,chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
+  p_class="BB", sigThreshold = 0.05)
+```
+The function outputs txt files of result significant genes.
+
+## 7. Identify driver pathway using `DriverPathway()` function
+
+The DriverGenePathway package also provides a de novo method based on mutual exclusivity and coverage to search driver pathway. The only mandatory input of function `DriverPathway()` is mutation matrix that is a 0-1 mutation matrix where rows represent patients, columns represent genes as follows. 
+
+```{}
+data(SampleMutationMatrix)
+head(mutation_matrix)
+```
+`DriverPathway()` function uses the Genetic algorithm as optimization method, for which some parameters are supposed to be set. The parameters have default values, see the help documentation. In order to reach the optimum result, it is suggested that the parameters be set manually. Underneath goes a sample of this function, which outputs a list.
+
+```{}
+denovoOut <- DriverPathway(mutation_matrix,
+  driver_size=3, pop_size=200, iters=500, permut_time=1000)
+```
