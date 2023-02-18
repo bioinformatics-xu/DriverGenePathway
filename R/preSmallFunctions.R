@@ -541,7 +541,7 @@ covariate_preprocessing <- function(M,V,k=100){
     # fill geneEffect with values in mutation M table
   }
 
-  km_result <- stats::kmeans(geneEffect, k, nstart = 100,iter.max = 50)
+  km_result <- stats::kmeans(geneEffect, k, nstart = 100,iter.max = 2000)
   # print(km_result)
   geneEffect<- cbind(geneEffect, cluster = km_result$cluster)
 

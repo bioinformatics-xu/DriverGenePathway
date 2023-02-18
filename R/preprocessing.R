@@ -19,9 +19,7 @@
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
                           output_filestem = "Preprocessed")
-
-{
-  is_coding = is_silent = categ = gene = effect = categ_idx = NULL
+  {is_coding = is_silent = categ = gene = effect = categ_idx = NULL
   ############### begin preprocess ###################
   # make sure mutation data has gene+patient
   #GENE

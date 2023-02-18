@@ -24,28 +24,28 @@
 #' @param output_filestem The parameters to name the output files, defaulted to "output".
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @export
-DriverGene <- function(Mutation=NULL,Coverage="defaultCoverage",Covariate="defaultCovariate",MutationDict="defaultDict",
+DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,
                        chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
                        p_class="BB", sigThreshold = 0.05,output_filestem="output")
 {
   if(!is.null(Mutation)){
-    if(Coverage=="defaultCoverage"){
+    if(is.null(Coverage)){
       Coverage <- data.table::fread("exome_full192.coverage.txt")
     }else{
-      cat("")
+      cat("Use the coverage input by user \n")
     }
-    if(Covariate=="defaultCovariate"){
+    if(is.null(Covariate)){
       Covariate <- data.table::fread("gene.covariates.txt")
     }else{
-      cat("")
+      cat("Use the covariate input by user \n")
     }
-    if(Covariate=="defaultDict"){
+    if(is.null(MutationDict)){
       MutationDict <- data.table::fread("mutation_type_dictionary_file.txt")
     }else{
-      cat("")
+      cat("Use the mutation dictionary input by user \n")
     }
-    preOut <- preprocessing(Mutation, Coverage, MutationDict,
-                            chr_files_directory,categ_flag,output_filestem=output_filestem)
+    preOut <- preprocessing(M=Mutation, C=Coverage, dict=MutationDict,V=Covariate,
+                            chr_files_directory=chr_files_directory,categ_flag=categ_flag,output_filestem=output_filestem)
     plotCategory(preOut$M)
     plotEffect(preOut$M)
 

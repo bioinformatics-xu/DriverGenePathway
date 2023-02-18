@@ -6,9 +6,9 @@
 \usage{
 DriverGene(
   Mutation = NULL,
-  Coverage = "defaultCoverage",
-  Covariate = "defaultCovariate",
-  MutationDict = "defaultDict",
+  Coverage = NULL,
+  Covariate = NULL,
+  MutationDict = NULL,
   chr_files_directory = "chr_files_hg19",
   categ_flag = NaN,
   bmr = 1.2e-06,
