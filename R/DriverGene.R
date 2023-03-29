@@ -34,7 +34,7 @@ DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=N
     plotCategory(preOut$M)
     plotEffect(preOut$M)
     
-    BMR_out <- BMR(preOut$M, preOut$C, Covariate, bmr)
+    BMR_out <- BMR(preOut$M, preOut$C, preOut$V, bmr)
     sigGenes(BMR_out, p_class,output_filestem = output_filestem,sigThreshold)
   }else{
     cat("Error:invalid input mutation data")

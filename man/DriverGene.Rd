@@ -9,7 +9,7 @@ DriverGene(
   Coverage = NULL,
   Covariate = NULL,
   MutationDict = NULL,
-  chr_files_directory = "chr_files_hg19",
+  chr_files_directory = NULL,
   categ_flag = NaN,
   bmr = 1.2e-06,
   p_class = "BB",

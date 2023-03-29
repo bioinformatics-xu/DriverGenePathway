@@ -23,7 +23,7 @@ preprocessing(
 
 \item{V}{Covariate raw data.}
 
-\item{chr_files_directory}{Chromosome files directory, hg19 or hg38.}
+\item{chr_files_directory}{Chromosome files directory, hg19 or hg18.}
 
 \item{categ_flag}{Mutation category number, should be either NaN or numeric.}
 

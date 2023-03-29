@@ -37,8 +37,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
     #remove any genes that we don't have coverage for
     bad_gene  <- setdiff(M$gene,C$gene)
     if (length(bad_gene)!=0){
-        cat(sprintf("NOTE: %d/%d gene names could not be mapped to coverage
-                    information. Excluding them.\n",length(bad_gene),
+        cat(sprintf("NOTE: %d/%d gene names could not be mapped to coverage information. Excluding them.\n",length(bad_gene),
                     length(unique(M$gene))))
         flag_remove <- which(!(M$gene %in% bad_gene))
         M <- M[flag_remove,]
