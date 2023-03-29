@@ -25,30 +25,15 @@
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @export
 DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,
-                       chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
+                       chr_files_directory=NULL,categ_flag=NaN, bmr=1.2e-6,
                        p_class="BB", sigThreshold = 0.05,output_filestem="output")
 {
   if(!is.null(Mutation)){
-    if(is.null(Coverage)){
-      Coverage <- data.table::fread("exome_full192.coverage.txt")
-    }else{
-      cat("Use the coverage input by user \n")
-    }
-    if(is.null(Covariate)){
-      Covariate <- data.table::fread("gene.covariates.txt")
-    }else{
-      cat("Use the covariate input by user \n")
-    }
-    if(is.null(MutationDict)){
-      MutationDict <- data.table::fread("mutation_type_dictionary_file.txt")
-    }else{
-      cat("Use the mutation dictionary input by user \n")
-    }
     preOut <- preprocessing(M=Mutation, C=Coverage, dict=MutationDict,V=Covariate,
                             chr_files_directory=chr_files_directory,categ_flag=categ_flag,output_filestem=output_filestem)
     plotCategory(preOut$M)
     plotEffect(preOut$M)
-
+    
     BMR_out <- BMR(preOut$M, preOut$C, Covariate, bmr)
     sigGenes(BMR_out, p_class,output_filestem = output_filestem,sigThreshold)
   }else{
