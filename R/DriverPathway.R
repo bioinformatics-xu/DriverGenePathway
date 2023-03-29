@@ -1,25 +1,24 @@
 #' Search driver pathway using de novo method
 #'
 #' This function searches driver pathway using de novo method based on mutual exclusivity and coverage
-#' It outputs the driver pathway and its p-value as a txt file.
 #'
 #' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
 #' @param driver_size The size of identified driver gene set, defaulted to 3.
 #' @param pop_size The population size of GA, defaulted to 200.
 #' @param iters The iteration time of GA, defaulted to 500.
 #' @param permut_time The times of permutation test, defaulted to 1000.
-#' @param process_bmr The background mutation rate for preprocessing mutation matrix using MutsigCV1.0.
-#' @param outfile The output file of driver gene set.
+#' @param process_bmr The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.
+#' @return Output of DriverPathway is the identified driver gene set.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @examples
 #' data(SampleMutationMatrix)
-#' DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
+#' driverSet <- DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
 #' @export
 DriverPathway <- function(mutation_data,
                           driver_size=3,
                           pop_size=200,
                           iters=500,
-                          permut_time=1000,process_bmr=1.2e-6,outfile="denovoDriverPathway.txt") {
+                          permut_time=1000,process_bmr=1.2e-6) {
   obj_weight <- vector()
   mutation_matrix <- preprocessing_mutation_data(mutation_data,process_bmr)
   # start with an random population
@@ -118,6 +117,6 @@ DriverPathway <- function(mutation_data,
 
   p_value <- mulExclusive_significance(mutation_matrix,driver_geneset,permut_time = permut_time)
   G <- list(driver_geneset=driver_geneset,p_value=p_value)
-  utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)
+  #utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)
   return(G)
 }

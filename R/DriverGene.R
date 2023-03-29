@@ -1,14 +1,10 @@
 #' Identify driver genes
 #'
-#' This function depends on a chromosome files folder, hg19 or hg38, which includes the txt files of each chromosome.
-#' The hg19 folder is able to download at the url of our Github https://github.com/bioinformatics-xu/DriverGenePathway.
-#' This function first preprocesses input data via the preprocessing function. Then the BMR function is used to calculate
-#' the background mutation rate. In order to identify driver genes, there are five hypothesis test methods to select
+#' This function depends on a chromosome files folder, hg19 or hg18, which includes the txt files of each chromosome.
+#' This function first preprocesses input data via the preprocessing function.
+#' Then the BMR function is used to calculate the background mutation rate. In order to identify driver genes, there are five hypothesis test methods to select
 #' from according to the parameter p_class, i.e. binomial distribution test, represents beta binomial distribution test,
-#' Fisher combined P-value test, likelihood ratio test, convolution test and 2D-projection method, which are
-#' all encapsulated in the sigGenes function. The output files contains txt files including the preprocessed
-#' mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
-#' pdf files as well.
+#' Fisher combined P-value test, likelihood ratio test, convolution test and 2D-projection method, which are all encapsulated in the sigGenes function.
 #' @param Mutation Mutation maf data, mandatory data.
 #' @param Coverage Coverage raw data, read from exome_full192.coverage.txt in MutSigCV by default.
 #' @param Covariate Covariate data, read from "gene.covariates.txt" in MutSigCV by default.
@@ -22,6 +18,8 @@
 #' method; "allTest" represents the mutual results of all methods.
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant.
 #' @param output_filestem The parameters to name the output files, defaulted to "output".
+#' @return Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
+#' pdf files as well.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @export
 DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,
@@ -33,9 +31,10 @@ DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=N
                             chr_files_directory=chr_files_directory,categ_flag=categ_flag,output_filestem=output_filestem)
     plotCategory(preOut$M)
     plotEffect(preOut$M)
-    
+
     BMR_out <- BMR(preOut$M, preOut$C, preOut$V, bmr)
-    sigGenes(BMR_out, p_class,output_filestem = output_filestem,sigThreshold)
+    sigGenes <- sigGenes(BMR_out, p_class,output_filestem = output_filestem,sigThreshold)
+    return(sigGenes)
   }else{
     cat("Error:invalid input mutation data")
   }

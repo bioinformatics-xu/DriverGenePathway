@@ -41,16 +41,16 @@ method; "allTest" represents the mutual results of all methods.}
 
 \item{output_filestem}{The parameters to name the output files, defaulted to "output".}
 }
-\description{
-This function depends on a chromosome files folder, hg19 or hg38, which includes the txt files of each chromosome.
-The hg19 folder is able to download at the url of our Github https://github.com/bioinformatics-xu/DriverGenePathway.
-This function first preprocesses input data via the preprocessing function. Then the BMR function is used to calculate
-the background mutation rate. In order to identify driver genes, there are five hypothesis test methods to select
-from according to the parameter p_class, i.e. binomial distribution test, represents beta binomial distribution test,
-Fisher combined P-value test, likelihood ratio test, convolution test and 2D-projection method, which are
-all encapsulated in the sigGenes function. The output files contains txt files including the preprocessed
-mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
+\value{
+Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
 pdf files as well.
+}
+\description{
+This function depends on a chromosome files folder, hg19 or hg18, which includes the txt files of each chromosome.
+This function first preprocesses input data via the preprocessing function.
+Then the BMR function is used to calculate the background mutation rate. In order to identify driver genes, there are five hypothesis test methods to select
+from according to the parameter p_class, i.e. binomial distribution test, represents beta binomial distribution test,
+Fisher combined P-value test, likelihood ratio test, convolution test and 2D-projection method, which are all encapsulated in the sigGenes function.
 }
 \author{
 Xiaolu Xu <lu.xu@lnnu.edu.cn>

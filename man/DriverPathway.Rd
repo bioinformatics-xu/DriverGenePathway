@@ -10,8 +10,7 @@ DriverPathway(
   pop_size = 200,
   iters = 500,
   permut_time = 1000,
-  process_bmr = 1.2e-06,
-  outfile = "denovoDriverPathway.txt"
+  process_bmr = 1.2e-06
 )
 }
 \arguments{
@@ -25,17 +24,17 @@ DriverPathway(
 
 \item{permut_time}{The times of permutation test, defaulted to 1000.}
 
-\item{process_bmr}{The background mutation rate for preprocessing mutation matrix using MutsigCV1.0.}
-
-\item{outfile}{The output file of driver gene set.}
+\item{process_bmr}{The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.}
+}
+\value{
+Output of DriverPathway is the identified driver gene set.
 }
 \description{
 This function searches driver pathway using de novo method based on mutual exclusivity and coverage
-It outputs the driver pathway and its p-value as a txt file.
 }
 \examples{
 data(SampleMutationMatrix)
-DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
+driverSet <- DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
 }
 \author{
 Xiaolu Xu <lu.xu@lnnu.edu.cn>
