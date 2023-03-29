@@ -3,7 +3,7 @@
 #' This function searches driver pathway using de novo method based on mutual exclusivity and coverage
 #' It outputs the driver pathway and its p-value as a txt file.
 #'
-#' @param mutation_matrix 0-1 mutation matrix where rows represent patients, columns represent genes.
+#' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
 #' @param driver_size The size of identified driver gene set, defaulted to 3.
 #' @param pop_size The population size of GA, defaulted to 200.
 #' @param iters The iteration time of GA, defaulted to 500.
@@ -13,7 +13,7 @@
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @examples
 #' data(SampleMutationMatrix)
-#' DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100,process_bmr=1.2e-6)
+#' DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
 #' @export
 DriverPathway <- function(mutation_data,
                           driver_size=3,
@@ -30,13 +30,13 @@ DriverPathway <- function(mutation_data,
     population[child,] <- rep(0,total_gene_size)
     population[child,sample(1:total_gene_size,driver_size)] <- 1
   }
-  
+
   # calculate each object
   evalVals = rep(NA, pop_size*2);
   for (object in 1:(pop_size*2)) {
     evalVals[object] = evalFunc(mutation_matrix,population[object,]);
   }
-  
+
   order_flag <- order(evalVals,decreasing = F)
   population <- population[order_flag,]
   Record <- 0
@@ -56,7 +56,7 @@ DriverPathway <- function(mutation_data,
     population <- population[order(weight_vector,decreasing = F),]
     weight_vector <- sort(weight_vector,decreasing = F)
     obj_weight[iter] <- weight_vector[1]
-    
+
     if(Record == 2){
       temp <- sort(unique(weight_vector),decreasing = F)
       index <- which(weight_vector <= temp[1])
@@ -68,9 +68,9 @@ DriverPathway <- function(mutation_data,
         weight_vector[index[j]] <- evalFunc(mutation_matrix,
                                             population[index[j],])
       }
-      
+
     }
-    
+
     if(Record == 5){
       temp <- sort(unique(weight_vector),decreasing = F)
       index <- which(weight_vector <= temp[1])
@@ -82,30 +82,30 @@ DriverPathway <- function(mutation_data,
         weight_vector[index[j]] <- evalFunc(mutation_matrix,
                                             population[index[j],])
       }
-      
+
     }
-    
-    
+
+
     min_weight <- min(weight_vector)
-    
+
     if(min_weight == t_minweight){
       Record <- Record + 1
     }else{
       Record <- 0
     }
     iter <- iter + 1
-    
+
   }
-  
+
   order_flag <- order(weight_vector)
   population <- population[order_flag,]
   max_pop <- population[1:pop_size,]
-  
+
   # delete the duplicate rows
   len_maxpop <- dim(max_pop)[1]
   index_del <- rep(0,times=len_maxpop)
   max_pop <- max_pop[!duplicated(max_pop),]
-  
+
   if(length(nrow(max_pop) > 1) > 0){
     driver_geneset <- matrix(data = NA, ncol = driver_size, nrow = nrow(max_pop))
     for (i in 1:nrow(max_pop)) {
@@ -113,9 +113,9 @@ DriverPathway <- function(mutation_data,
     }
   }else{
     driver_geneset <- colnames(mutation_matrix)[which(max_pop==1)]
-    
+
   }
-  
+
   p_value <- mulExclusive_significance(mutation_matrix,driver_geneset,permut_time = permut_time)
   G <- list(driver_geneset=driver_geneset,p_value=p_value)
   utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)

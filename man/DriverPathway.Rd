@@ -15,6 +15,8 @@ DriverPathway(
 )
 }
 \arguments{
+\item{mutation_data}{0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.}
+
 \item{driver_size}{The size of identified driver gene set, defaulted to 3.}
 
 \item{pop_size}{The population size of GA, defaulted to 200.}
@@ -26,8 +28,6 @@ DriverPathway(
 \item{process_bmr}{The background mutation rate for preprocessing mutation matrix using MutsigCV1.0.}
 
 \item{outfile}{The output file of driver gene set.}
-
-\item{mutation_matrix}{0-1 mutation matrix where rows represent patients, columns represent genes.}
 }
 \description{
 This function searches driver pathway using de novo method based on mutual exclusivity and coverage
@@ -35,7 +35,7 @@ It outputs the driver pathway and its p-value as a txt file.
 }
 \examples{
 data(SampleMutationMatrix)
-DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100,process_bmr=1.2e-6)
+DriverPathway(mutation_matrix, driver_size=3, pop_size=20, iters=50, permut_time=100)
 }
 \author{
 Xiaolu Xu <lu.xu@lnnu.edu.cn>

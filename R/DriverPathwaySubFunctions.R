@@ -68,7 +68,7 @@ mulExclusive_significance <- function(mutation_matrix,driver_geneset,permut_time
   flag <- which(colnames(mutation_matrix) %in% driver_geneset)
   chromosome_data <- rep(0,ncol(mutation_matrix))
   chromosome_data[flag] <- 1
-  
+
   for (j in 1:permut_time) {
     mutMatrix_temp <- mutation_matrix
     mutMatrix_temp[,flag] <- 0
@@ -79,35 +79,36 @@ mulExclusive_significance <- function(mutation_matrix,driver_geneset,permut_time
     }
     weight_score[j] <- evalFunc(mutMatrix_temp,chromosome_data)
   }
-  
+
   p_value <- sum(evalFunc(mutation_matrix,chromosome_data) >= weight_score)/permut_time
   return(p_value)
-  
+
 }
 
 # generate input mutation matrix for AWEMP
 generate_mutation_matrix <- function(M,gene.name){
   patient.mut <- base::unique(subset(M,select = c("patient","gene")))
-  
+
   gene.flag <- which(patient.mut$gene %in% gene.name)
   pat.mut.col <- as.data.frame(patient.mut[gene.flag,])
   gene <- sort(unique(pat.mut.col$gene))
   patient <- sort(unique(pat.mut.col$patient))
   pat.mut.matrix <- as.data.frame(matrix(data = NA,nrow = length(patient),ncol = length(gene)))
   dimnames(pat.mut.matrix) <- list(patient,gene)
-  
+
   for(i in 1:(length(patient))){
     maf.patient <- pat.mut.col[which(pat.mut.col$patient == patient[i]),]
     flag.g <- which(gene %in% maf.patient$gene)
     pat.mut.matrix[i,flag.g] <- 1
   }
-  
+
   pat.mut.matrix[is.na(pat.mut.matrix)] <- 0
   pat.mut.matrix <- pat.mut.matrix[,!(colnames(pat.mut.matrix) %in% "TTN")]
   return(pat.mut.matrix)
 }
 
 preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
+  gene_idx = NULL
   if(length(which(mutation_data == 0)) + length(which(mutation_data == 1)) == nrow(mutation_data)*ncol(mutation_data)){
     # the mutation data contains only 0 and 1, then identify driver pathway directly
     mutation_matrix <- mutation_data
@@ -121,32 +122,32 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     }else{
       C <- NULL
     }
-    
+
     if(any(grepl("dictionary_file.txt",current.files))){
       dict <- as.data.frame(data.table::fread(file = current.files[grepl("dictionary_file.txt",current.files)]))
     }else{
       dict <- NULL
     }
-    
+
     if(any(grepl("covariates.txt",current.files))){
       V <- as.data.frame(data.table::fread(file = current.files[grepl("covariates.txt",current.files)]))
     }else{
       V <- NULL
     }
-    
+
     if(any(grepl("chr_files_hg",current.files))){
       chr_files_directory <- current.files[grepl("chr_files_hg",current.files)]
     }else{
       chr_files_directory <- NULL
     }
-    
+
     preOut <- preprocessing(M=mutation_data, C=C, dict=dict,V=V,chr_files_directory=chr_files_directory)
     M <- preOut$M
     C <- preOut$C
     V <- preOut$V
-    
+
     G <- data.frame(gene=as.character(unique(C$gene)))
-    
+
     cat("Loading covariate data... \n")
     #V <- fread(covariate_file,header = TRUE,sep = '\t')
     f <- colnames(V)
@@ -157,10 +158,10 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
       covariate <- V[[cvnames[i]]]
       G[[cvnames[i]]] <- covariate[gidx]
     }
-    
+
     f <- colnames(C)
     coverage_patient_names <- f[4:ncol(C)]
-    
+
     #remove any genes that we don't have coverage for
     bad_gene  <- setdiff(M$gene,C$gene)
     if (length(bad_gene)!=0){
@@ -169,13 +170,13 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
       flag_remove <- which(!(M$gene %in% bad_gene))
       M <- M[flag_remove,]
     }
-    
+
     #map categories
     K <- data.frame(name = stringr::str_sort(unique(C$categ),locale = "C"))
     C$categ_idx <- match(C$categ,K$name)
     ncat <- length(K$name)
     M$categ_idx <- match(M$categ,K$name)
-    
+
     #make sure there is a null+indel category
     if (is.numeric(unique(C$categ))){
       null_categ <- length(K$name)
@@ -188,14 +189,14 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         stop("ERROR: multiple null/indel categories. \n")
       }
     }
-    
+
     # make sure C is sorted by the same gene order as in G
     C$gene_idx <- match(C$gene,G$gene)
     C <- dplyr::arrange(C,gene_idx)
-    
+
     #map genes
     M$gene_idx <- match(M$gene,G$gene)
-    
+
     #regularize the sample name in the mutation table
     name_before <- M$patient
     M$patient <- gsub("-Tumor$","",M$patient)
@@ -207,7 +208,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     if (any(name_before != M$patient)){
       cat("NOTE: Converting '-' to '_' in patient names. \n")
     }
-    
+
     patient <- stringr::str_sort(unique(M$patient),locale = "C")
     pat <- data.frame(name = patient)
     pat$cov_idx <- match(pat$name,coverage_patient_names)
@@ -216,7 +217,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     if (np < 2){
       stop("DriverPathway is not applicable to single patients. \n")
     }
-    
+
     #is generic coverage data given?
     generic_column_name <- "coverage"
     if ((length(coverage_patient_names)>1) || (length(coverage_patient_names)==1 &
@@ -238,10 +239,10 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
       pat$cov_idx <- 1
       generic_coverage_flag <- TRUE
     }
-    
+
     #BUILD n and N tables
     cat("Building n and N tables...\n")
-    
+
     gene <- sort(as.character(unique(C$gene)))
     categ_name <- as.character(K$name)
     categ_name[length(categ_name)+1] <- "total"
@@ -249,7 +250,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     n_silent <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
     n_nonsilent <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
     n_noncoding <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
-    
+
     for (i in 1:ncat){
       for (j in 1:np){
         silent_hist <- graphics::hist(M$gene_idx[(M$effect %in% "silent") &
@@ -258,7 +259,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         n_silent[,i,j] <-  silent_hist$counts
       }
     }
-    
+
     for (i in 1:ncat){
       for (j in 1:np){
         nonsilent_hist <- graphics::hist(M$gene_idx[((M$effect %in% "nonsilent")|
@@ -268,8 +269,8 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         n_nonsilent[,i,j] <-  nonsilent_hist$counts
       }
     }
-    
-    
+
+
     for (i in 1:ncat){
       for (j in 1:np){
         noncoding_hist <- graphics::hist(M$gene_idx[(M$effect %in% "noncoding") &
@@ -278,12 +279,12 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         n_noncoding[,i,j] <-  noncoding_hist$counts
       }
     }
-    
-    
+
+
     N_silent <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
     N_nonsilent <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
     N_noncoding <- array(0,c(ng,ncat+1,np),dimnames=list(gene,categ_name,patient))
-    
+
     for (i in 1:ncat)
       for (j in 1:np)
       {
@@ -291,8 +292,8 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         N_nonsilent[,i,j] <-  C$coverage[(C$categ %in% categ_name[i]) & (C$effect %in% "nonsilent")]
         N_noncoding[,i,j] <-  C$coverage[(C$categ %in% categ_name[i]) & (C$effect %in% "noncoding")]
       }
-    
-    
+
+
     #MAKE SURE ALL NUMBERS ARE INTEGERS
     n_silent <- round(n_silent)
     n_nonsilent  <- round(n_nonsilent)
@@ -300,12 +301,12 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     N_silent  <- round(N_silent)
     N_nonsilent  <- round(N_nonsilent)
     N_noncoding  <- round(N_noncoding)
-    
+
     #REMOVE MUTATIONS IN BINS WITH EXTREMELY LOW COVERAGE
     n_silent[n_silent>N_silent] <- 0
     n_nonsilent[n_nonsilent>N_nonsilent] <- 0
     n_noncoding[n_noncoding>N_noncoding] <- 0
-    
+
     #SANITY CHECKS ON TOTALS
     tot_n_nonsilent <- sum(n_nonsilent)
     tot_N_nonsilent <- sum(N_nonsilent)
@@ -318,7 +319,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     tot_rate_noncoding <- tot_n_noncoding/tot_N_noncoding
     tot_rate_coding <- (tot_n_nonsilent+tot_n_silent)/
       (tot_N_nonsilent+tot_N_silent)
-    
+
     min_tot_n_nonsilent <- 50
     min_tot_n_silent <- 50
     min_tot_n_noncoding <- 50
@@ -330,7 +331,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     max_rate_noncoding <- 1e-3
     max_abs_log2_difference_nonsilent_silent <- 1.0
     max_abs_log2_difference_noncoding_coding <- 1.0
-    
+
     #see if silent and nonsilent are OK: if not, give warning
     # if (tot_n_nonsilent<min_tot_n_nonsilent || tot_n_silent<min_tot_n_silent)
     #   stop("not enough mutations to analyze")
@@ -344,7 +345,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     if (abs_log2_difference_nonsilent_silent>
         max_abs_log2_difference_nonsilent_silent)
       print('Warning: silent and nonsilent rates are too different.')
-    
+
     ## see if noncoding is OK: if not, give warning and zero it all out
     ok = FALSE
     {if (tot_n_noncoding==0)
@@ -368,13 +369,13 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
         }
       }
     }
-    
+
     if (!ok){
       cat('Zeroing out all noncoding mutations and coverage for the rest of the calculation. \n');
       n_noncoding[,,]= 0;
       N_noncoding[,,] = 0;
     }
-    
+
     #add total columns
     N_silent[,ncat+1,] <- N_silent[,null_categ,]
     N_nonsilent[,ncat+1,] <- N_nonsilent[,null_categ,]
@@ -382,7 +383,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     n_silent[,ncat+1,] <- apply(n_silent,c(1,3),sum)
     n_nonsilent[,ncat+1,] <- apply(n_nonsilent,c(1,3),sum)
     n_noncoding[,ncat+1,] <- apply(n_noncoding,c(1,3),sum)
-    
+
     #total across patients, save in G
     G$N_nonsilent <- apply(N_nonsilent[,ncat+1,],1,sum)
     G$N_silent <- apply(N_silent[,ncat+1,],1,sum)
@@ -390,27 +391,27 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     G$n_nonsilent <- apply(n_nonsilent[,ncat+1,],1,sum)
     G$n_silent <- apply(n_silent[,ncat+1,],1,sum)
     G$n_noncoding <- apply(n_noncoding[,ncat+1,],1,sum)
-    
+
     # PROCESS COVARIATES
     cat("Processing covariates... \n")
-    
+
     V <- matrix(data = NaN,nrow = ng,ncol = nv)
     for (i in 1:nv) {
       V[,i] <- G[[cvnames[i]]]
     }
     colnames(V) <- cvnames
-    
+
     # Find Bagels
     cat(sprintf("Finding bagels...  "))
     max_neighbors <- 50
     qual_min <- 0.05
-    
+
     Z <- scale(V)
-    
+
     G$nnei <- NaN
     G$x <- NaN
     G$X <- NaN
-    
+
     G1 <- G
     G1$pb <- NaN
     for (i in 1:nrow(G)) {
@@ -425,7 +426,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
       analysis_gene <- G1$gene[order(G1$pb)[1:50]]
       print(paste("number of analysis genes (50) ",length(analysis_gene)))
     }
-    
+
     if(length(analysis_gene) > 500){
       analysis_gene <- G1$gene[which(G1$pb <= 0.05)]
       #print(paste("number of analysis genes (p value < 0.05) ",length(analysis_gene)))

@@ -14,6 +14,8 @@
 #' @param chr_files_directory Chromosome files directory, hg19 or hg18.
 #' @param categ_flag Mutation category number, should be either NaN or numeric.
 #' @param output_filestem Unified prefix of output data, could be modified as well.
+#' @importFrom utils download.file unzip
+#' @importFrom stats p.adjust
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
@@ -62,7 +64,7 @@ if (("gene" %in% colnames(M))&("Hugo_Symbol" %in% colnames(M))){
 }else if("Hugo_Symbol" %in% colnames(M)){
   M$gene <- M$Hugo_Symbol
 }else if("gene" %in% colnames(M)){
-  
+
 }else{
   stop("mutation_file lacks 'gene' or 'Hugo_Symbol' column.")
 }
@@ -73,7 +75,7 @@ if (("patient" %in% colnames(M))&("Tumor_Sample_Barcode" %in% colnames(M))){
   # cat("NOTE: Both 'patient' and 'Tumor_Sample_Barcode' are present
   #     in mutation_file. Using 'patient'. \n")
 }else if("patient" %in% colnames(M)){
-  
+
 }else if("Tumor_Sample_Barcode" %in% colnames(M)){
   M$patient <- M$Tumor_Sample_Barcode
 }else{
@@ -143,7 +145,7 @@ if ("effect" %in% colnames(M)){
                     toupper(dict$Variant_Classification),nomatch =nrow(dict)+1)
   dict <- rbind(dict,dict[nrow(dict),])
   dict[nrow(dict)+1,] <- "unknown"
-  
+
   M$effect <- dict$effect[flag_num]
   bad <- which(M$effect == "unknown")
   if(length(bad)>0){
@@ -326,7 +328,7 @@ if(method==1){
   K$names <- sort(unique(M$categ))
 }else if(method==2){
   # cat(sprintf("Will use two categories: missense and null+indel. \n"))
-  
+
   K1 <- data.frame(left=0)
   K1$left <- "ACGT"
   K1$from <-"AC"
@@ -335,7 +337,7 @@ if(method==1){
   K1$autoname <- "missense"
   K1$name <- "missense"
   K1$type <- "point"
-  
+
   K2 <- data.frame(left=0)
   K2$left <- "ACGT"
   K2$from <-"AC"
@@ -344,39 +346,39 @@ if(method==1){
   K2$autoname <- "null+indel"
   K2$name <- "null+indel"
   K2$type <- "non-point"
-  
+
   K <- data.frame(left=0,from=0,change=0,right=0,autoname=0,name=0,type=0)
   K[1,] <- K1[1,]
   K[2,] <- K2[1,]
-  
+
   # assign categories
   M$categ <- rep("---",times=nrow(M))
   flag_null <- which(M$effect == "null")
   M$categ[flag_null] <- rep(K$name[2],each=length(flag_null))
   flag_nonull <- which(M$effect != "null")
   M$categ[flag_nonull] <- K$name[1]
-  
+
   # collapse coverage
   cat(sprintf("Preprocessing Coverage data... \n"))
   temp <- unique(C$categ)
   C$categ_idx <- match(C$categ,temp)
-  
+
   C <- dplyr::arrange(C,gene,effect,categ_idx)
   #order as gene, effect, categ_idx, if decrease, then desc(gene)
-  
+
   ug <- unique(C$gene)
   ng <- length(ug)
   ue <- unique(C$effect)
   ne <- length(ue)
   nk <- nrow(K)
-  
+
   idx <- which(C$categ_idx <= nk)
   C2 <- C[idx,]
   C2$categ[which(C2$categ_idx == 1)] <- K$name[1]
   C2$categ[which(C2$categ_idx == 2)] <- K$name[2]
   C2 <- subset(C2,select = c(gene,effect,categ))
   np <- length(coverage_patient_names)
-  
+
   for (p in 1:np) {
     oldcov <- array(as.integer(unlist(C[[coverage_patient_names[p]]])),
                     c(192,ne,ng))
@@ -393,16 +395,16 @@ if(method==1){
   }else{
     C$totcov <- apply(C_coverage,1,sum)
   }
-  
+
   npm <- length(unique(M$patient))
   if((length(coverage_patient_names)==1) & (npm > 1)){
     C$totcov <- C$totcov * npm
   }
-  
+
   # will use only the coding mutations+coverage to do this
   C$is_coding[which((C$effect == "nonsilent")|(C$effect == "silent"))] <- 1
   C$is_coding[which(!((C$effect == "nonsilent")|(C$effect == "silent")))] <- 0
-  
+
   # collapse coverage to 192
   X <- data.frame(categ=rep(1,each=length(unique(C$categ))))
   X$categ <- unique(C$categ)
@@ -413,13 +415,13 @@ if(method==1){
   X$from <- substr(X$categ,start = 3,stop = 3)
   X$to <- substr(X$categ,start = 6,stop = 6)
   X$right <- substr(X$categ,start = 8,stop = 8)
-  
+
   X$yname <- paste(X$from,"in",X$left,sep = " ")
   X$yname <- paste(X$yname,"_",X$right,sep = "")
   C_iscoding <- C[which(C$is_coding == 1),]
   X$N <- tapply(C_iscoding$totcov,C_iscoding$categ_idx,sum)
   X$newbase_idx <-  match(X$to,c("A","C","G","T"))
-  
+
   Y_name <- preprocessGenerateCategContext65()
   Y <- data.frame(num=1:65,name=Y_name)
   X$context65 <- match(X$yname,Y_name,nomatch = 65)
@@ -428,11 +430,11 @@ if(method==1){
   Y_N[which(as.numeric(rownames(N)) %in% as.numeric(Y[,1])),1] <-  N
   Y$N <- Y_N
   Y$N <- round(Y$N/3)
-  
+
   # STEPE 2
   #MUTATIONS：get context65 by looking up from reference genome
   cat(sprintf("Looking up trinucleotide contexts from chr files...\n"))
-  
+
   #f2 <- paste("chr",uchr,".txt",sep = "")
   f2 <- paste(chr_files_directory,f2,sep = "/")
   triplet <- data.frame(name = rep(1,each=nrow(M)))
@@ -446,7 +448,7 @@ if(method==1){
     }
     filesize <- d$size
     ff <- data.table::fread(f2[ci],header = F)
-    
+
     triplet$name[midx] <- stringr::str_sub(ff[1],M$start[midx]-1,M$start[midx]+1)
   }
   flag_non_triplet <- which(triplet == 1)
@@ -470,7 +472,7 @@ if(method==1){
   M$context65 <- match(M$yname,Y$name,nomatch = 65)
   M$newbase_idx <-  match(substr(M$newbase,1,1),c("A","C","G","T"),
                           nomatch = NaN)
-  
+
   midx <- which((M$ref_allele != "-") & (M$newbase != "-") &
                   (M$context65 >= 1) & (M$context65 <= 65) &
                   (M$newbase_idx >= 1) & (M$newbase_idx <= 4))
@@ -482,12 +484,12 @@ if(method==1){
   Y$C <- 0
   Y$G <- 0
   Y$T <- 0
-  
+
   for (i in 1:4) {
     M_N_i <- M_N[which(M_N$newbase_idx == i),]
     Y[[bases[i]]][M_N_i$context65] <- M_N_i$freq
   }
-  
+
   #STEP3 Category Discovery
   #Category Discovery
   preprocessed_file_stem <- paste(output_filestem,"outputs",sep = "_")
@@ -495,7 +497,7 @@ if(method==1){
     dir.create(preprocessed_file_stem)
   }
   setwd(preprocessed_file_stem)
-  
+
   Nn <- preprocessCollapseNn65to32(Y)
   P <- data.frame(max_k = ncategs,mutcategs_report_filename =
                     paste(output_filestem,"_mutcateg_discovery.txt",sep = ""))
@@ -507,7 +509,7 @@ if(method==1){
   for (i in 1:nrow(X)) {
     X$kidx[i] <- which(c[X$context65[i],,X$newbase[i]]==1)
   }
-  
+
   #STEP4
   #assign mutation categories
   cat(sprintf("Assigning mutation categories...\n"))
@@ -517,7 +519,7 @@ if(method==1){
                    (M$newbase_idx==X$newbase_idx[i]))
     M$categ[idx] <- rep(as.character(K$name[X$kidx[i]]),each=length(idx))
   }
-  
+
   # add null+indel category
   K2 <- as.data.frame(matrix(data = character(0),nrow = 1))
   K2$left <- "ACGT"
@@ -534,21 +536,21 @@ if(method==1){
   K$n[nrow(K)] <- length(midx)
   K$rate[nrow(K)] <- K$n[nrow(K)]/K$N[nrow(K)]
   K$relrate[nrow(K)] <- K$rate[nrow(K)]/K$rate[1]*K$relrate[1]
-  
+
   # STEP5
   # collapse coverage
   cat(sprintf("Collapsing coverages...\n"))
   C <- dplyr::arrange(C,gene,effect,categ_idx)
   #order as gene, effect, categ_idx, if decrease, then desc(gene)
-  
+
   ug <- unique(C$gene)
   ng <- length(ug)
   ue <- unique(C$effect)
   ne <- length(ue)
   nk <- nrow(K)
-  
+
   idx <- which(C$categ_idx <= nk)
-  
+
   K_name <- unlist(unique(K$name))
   C2 <- C[idx,]
   # find categ of Coverage
@@ -557,9 +559,9 @@ if(method==1){
                   (C2$categ_idx<=length(K_name)))
   C2$categ <- K_name[C2$categ_idx[idx1]]
   C2 <- subset(C2,select = c(gene,effect,categ))
-  
+
   np <- length(coverage_patient_names)
-  
+
   for (p in 1:np) {
     oldcov <- array(as.integer(unlist(C[[coverage_patient_names[p]]])),
                     c(192,ne,ng))
@@ -572,13 +574,13 @@ if(method==1){
       }
       newcov[ki,,] <- apply(oldcov[cidx,,], c(2,3), sum)
     }
-    
+
     C2[[coverage_patient_names[p]]] <- as.vector(newcov)
   }
-  
+
   C <- C2
   remove(C2)
-  
+
 } # else if(method == 3)
 
 #SAVE OUTPUT FILES

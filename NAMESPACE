@@ -2,3 +2,6 @@
 
 export(DriverGene)
 export(DriverPathway)
+importFrom(stats,p.adjust)
+importFrom(utils,download.file)
+importFrom(utils,unzip)

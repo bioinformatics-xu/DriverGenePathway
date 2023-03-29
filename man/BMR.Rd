@@ -17,8 +17,6 @@ BMR(preOutM, preOutC, preOutV, bmr = 1.2e-06)
 }
 \value{
 The output BMR_out is an input to the sigGenes function.
-
-The output BMR_out is an input to the sigGenes function.
 }
 \description{
 It uses the data output by the preprocessing function in order to get
@@ -26,11 +24,5 @@ background mutation rate. It uses the method of bagel. The result will be then
 used in varified specific gene detecting methods.
 }
 \author{
-Xiaolu Xu <lu.xu@lnnu.edu.cn>
-
-It uses the data output by the preprocessing function in order to get
-background mutation rate. It uses the method of bagel. The result will be then
-used in varified specific gene detecting methods.
-
 Xiaolu Xu <lu.xu@lnnu.edu.cn>
 }
