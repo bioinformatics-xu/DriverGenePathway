@@ -8,7 +8,7 @@ This function searches driver pathway using de novo method based on mutual exclu
 DriverPathway(
   mutation_data,
   driver_size = 3,
-  pop_size = 200,
+  pop_size = 100,
   iters = 500,
   permut_time = 1000,
   process_bmr = 1.2e-06
@@ -19,7 +19,7 @@ DriverPathway(
 
 \item{driver_size}{The size of identified driver gene set, defaulted to 3.}
 
-\item{pop_size}{The population size of GA, defaulted to 200.}
+\item{pop_size}{The population size of GA which should be adjusted according the number of samples, defaulted to 100.}
 
 \item{iters}{The iteration time of GA, defaulted to 500.}
 
@@ -28,7 +28,7 @@ DriverPathway(
 \item{process_bmr}{The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.}
 }
 \value{
-Output of DriverPathway is the identified driver gene set.
+Output of DriverPathway is the mutation matrix, identified driver gene set, and p-value.
 }
 \description{
 Search driver pathway using de novo method
