@@ -74,7 +74,7 @@ After preprocessing, the output data including mutation data and coverage data g
 There are five hypothesis test methods according to `p_class` parameter, which are all encapsulated in the sigGenes function, i.e. `BB` represents beta binomial distribution test; `FCPT` represents Fisher combined P-value test; `LRT` represents likelihood ratio test; `CT` represents convolution test; `projection` represents projection test method; `allTest` represents the mutual results of all methods. The parameter `sigThreshold` represents the threshhold of q-value to judge if the gene is significant. Here is a sample of the usage of `DriverGene()`, for more information of the function and parameters, see help documentation.
 
 ```{}
-DriverGene(
+driverGenes <- DriverGene(
   M,C,V,dict,chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
   p_class="BB", sigThreshold = 0.05)
 ```
