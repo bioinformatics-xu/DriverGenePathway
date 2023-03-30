@@ -141,7 +141,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
       chr_files_directory <- NULL
     }
 
-    preOut <- preprocessing(M=mutation_data, C=C, dict=dict,V=V,chr_files_directory=chr_files_directory)
+    preOut <- preprocessing(M=mutation_data, C=C, dict=dict,V=V,chr_files_directory=chr_files_directory,preprocessedOutput=FALSE)
     M <- preOut$M
     C <- preOut$C
     V <- preOut$V
@@ -402,7 +402,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     colnames(V) <- cvnames
 
     # Find Bagels
-    cat(sprintf("Finding bagels...  "))
+    cat(sprintf("Finding bagels...  \n"))
     max_neighbors <- 50
     qual_min <- 0.05
 

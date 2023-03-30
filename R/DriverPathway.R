@@ -1,5 +1,4 @@
 #' Search driver pathway using de novo method
-#'
 #' This function searches driver pathway using de novo method based on mutual exclusivity and coverage
 #'
 #' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.

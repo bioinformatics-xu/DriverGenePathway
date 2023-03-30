@@ -11,7 +11,8 @@ preprocessing(
   V,
   chr_files_directory,
   categ_flag = NaN,
-  output_filestem = "Preprocessed"
+  output_filestem = "Preprocessed",
+  preprocessedOutput = TRUE
 )
 }
 \arguments{
@@ -28,6 +29,8 @@ preprocessing(
 \item{categ_flag}{Mutation category number, should be either NaN or numeric.}
 
 \item{output_filestem}{Unified prefix of output data, could be modified as well.}
+
+\item{preprocessedOutput}{If output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.}
 }
 \value{
 The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.

@@ -2,7 +2,8 @@
 % Please edit documentation in R/DriverPathway.R
 \name{DriverPathway}
 \alias{DriverPathway}
-\title{Search driver pathway using de novo method}
+\title{Search driver pathway using de novo method
+This function searches driver pathway using de novo method based on mutual exclusivity and coverage}
 \usage{
 DriverPathway(
   mutation_data,
@@ -30,6 +31,7 @@ DriverPathway(
 Output of DriverPathway is the identified driver gene set.
 }
 \description{
+Search driver pathway using de novo method
 This function searches driver pathway using de novo method based on mutual exclusivity and coverage
 }
 \examples{

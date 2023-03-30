@@ -14,12 +14,13 @@
 #' @param chr_files_directory Chromosome files directory, hg19 or hg18.
 #' @param categ_flag Mutation category number, should be either NaN or numeric.
 #' @param output_filestem Unified prefix of output data, could be modified as well.
+#' @param preprocessedOutput If output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.
 #' @importFrom utils download.file unzip
 #' @importFrom stats p.adjust
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
-                          output_filestem = "Preprocessed")
+                          output_filestem = "Preprocessed",preprocessedOutput=TRUE)
 {is_coding = is_silent = categ = gene = effect = categ_idx = NULL
 
 if(is.null(C)){
@@ -591,19 +592,22 @@ rem_col_M <- c("newbase","chr_idx","triplet","yname","context65",
 M <- subset(M,select = colnames(M)[which(!(colnames(M) %in% rem_col_M))])
 V <- covariate_preprocessing(M,V)
 
-utils::write.table(M,file = paste(output_filestem,"_mutations.txt",sep = ""),
-                   sep = "\t",quote = F,row.names = F)
+if(preprocessedOutput){
+  utils::write.table(M,file = paste(output_filestem,"_mutations.txt",sep = ""),
+                     sep = "\t",quote = F,row.names = F)
 
-#(2) coverage file
-utils::write.table(C,file = paste(output_filestem,"_coverage.txt",sep = ""),
-                   sep = "\t",quote = F,row.names = F)
+  #(2) coverage file
+  utils::write.table(C,file = paste(output_filestem,"_coverage.txt",sep = ""),
+                     sep = "\t",quote = F,row.names = F)
 
-utils::write.table(V,file = paste(output_filestem,"_covariate.txt",sep = ""),
-                   sep = "\t",quote = F,row.names = F)
+  utils::write.table(V,file = paste(output_filestem,"_covariate.txt",sep = ""),
+                     sep = "\t",quote = F,row.names = F)
 
-#(3) categories file
-utils::write.table(as.matrix(K),file = "MutationCategories.txt",
-                   sep = "\t",quote = F,row.names = F)
+  #(3) categories file
+  utils::write.table(as.matrix(K),file = "MutationCategories.txt",
+                     sep = "\t",quote = F,row.names = F)
+}
+
 setwd("..")
 cat(sprintf("Preprocessing finished. \n"))
 
