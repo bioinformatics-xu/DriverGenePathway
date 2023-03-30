@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+<meta name="date" content="2023-03-30" />
+
+<title>DriverGenePathway</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">DriverGenePathway</h1>
+<h3 class="subtitle">An R package for identifying driver gene and driver
+pathway</h3>
+<h4 class="author"><div class="line-block">Xiaolu Xu<br />
+<br />
+School of Computer and Information Technology<br />
+Liaoning Normal University<br />
+Dalian China, 116029</div></h4>
+<h4 class="date">2023-03-30</h4>
+
+
+
+<div id="getting-started" class="section level2">
+<h2>1. Getting started</h2>
+<p><strong>Installing the package:</strong> To install the
+<em>DriverGenePathway</em> package, the easiest way is to install using
+install_github() function as follows:</p>
+<pre><code>library(devtools)
+install_github(&quot;bioinformatics-xu/DriverGenePathway&quot;)</code></pre>
+<p><strong>Loading the package:</strong> To load the
+<code>DriverGenePathway</code> package in your R session, type
+<code>library(DriverGenePathway)</code>.</p>
+<p><strong>Help files:</strong> Detailed information on
+<code>DriverGenePathway</code> package functions can be obtained in the
+help files. For example, to view the help file for the function
+<code>DriverGene</code> in a R session, use
+<code>?DriverGene</code>.</p>
+</div>
+<div id="introduction" class="section level2">
+<h2>2. Introduction</h2>
+<p>The main purpose of DriverGenePathway is to identify significantly
+important mutated genes and gene sets (pathways) that are responsible
+for cancer, called driver genes and driver pathways, thus this package
+contains two main functions, <code>DriverGene()</code> and
+<code>DriverPathway()</code>, aimming respectively at searching driver
+genes and driver pathways. For <code>DriverGene()</code>, we provided 5
+hypothesis testing methods to choose from. The process mainly consists
+of three sections. First the mutation and coverage data are guaranteed
+available and preprocessed. Then according to the covariate data, the
+background mutation rate is calculated. Finally the significant genes
+are screened via hypothesis testing methods. Regarding
+<code>DriverPathway()</code>, a de novo method is employed to search the
+driver pathway. It models an optimal submatrix function based on
+coverage and mutual exclusivity, which are basic characteristics of
+driver pathways. In addition, the submatrix optimization problem (a
+quadratic programming problem) is solved by genetic algorithm.</p>
+<p>##3. Data input</p>
+<p>To run <code>DriverGene()</code>, four data sets of a particular
+cancer and a directory of choromosome files are required. The first data
+set is the mutation maf data, a data set containing raw information of
+mutations. The second is the coverage data, containing raw information
+of coverages. The third data set is the covariate data, which contains
+information of covariates, and is used for background mutation rate
+discovery. The fourth is the mutation type dictionary, a data set
+containing variant mutation types and their correspondings for use. In
+addition, the chromosome files directory can be either hg19 or hg38.
+Besides, we provide files corresponding to the default data other than
+MAF including Coverage, Covariate, MutationDict, and
+chr_files_directory. If these files are not personalized for input,
+users should download the above four files and put in the current work
+directory. As example, small data sets are available in the
+DriverGenePathway package.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DriverGenePathway)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SampleMutationMaf)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SampleCoverage)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SampleDict)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SampleCovariate)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(M)</span></code></pre></div>
+<pre><code>##   Hugo_Symbol Chromosome Start_position End_position Variant_Classification
+## 1        TP53         17          73370        73371        Frame_Shift_Del
+## 2        TP53         17          73357        73378        Frame_Shift_Del
+## 3        TP53         17          72707        72707        Frame_Shift_Del
+## 4        TP53         17          74684        74699        Frame_Shift_Del
+## 5        MYH4         17        2854999      2854999        Frame_Shift_Del
+## 6        TP53         17          73600        73601           In_Frame_Ins
+##         Reference_Allele Tumor_Seq_Allele1 Tumor_Seq_Allele2
+## 1                     AA                 -                 -
+## 2 CCACACTATGTCGAAAAGTGTT                 -                 -
+## 3                      C                 -                 -
+## 4       ACCATTGTTCAATATC                 -                 -
+## 5                      T                 -                 -
+## 6                      -               GAT               GAT
+##   Tumor_Sample_Barcode is_coding is_silent categ
+## 1   LUSC-18-3407-Tumor         1         0     7
+## 2   LUSC-18-3409-Tumor         1         0     7
+## 3   LUSC-18-3416-Tumor         1         0     7
+## 4   LUSC-22-4593-Tumor         1         0     7
+## 5   LUSC-22-5474-Tumor         1         0     7
+## 6   LUSC-22-5485-Tumor         1         0     7</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(C)</span></code></pre></div>
+<pre><code>##      gene    effect    categ coverage
+## 1 ALOX12B noncoding A(A-&gt;C)A       14
+## 2 ALOX12B noncoding A(A-&gt;C)C        5
+## 3 ALOX12B noncoding A(A-&gt;C)G       30
+## 4 ALOX12B noncoding A(A-&gt;C)T        6
+## 5 ALOX12B noncoding A(A-&gt;G)A       14
+## 6 ALOX12B noncoding A(A-&gt;G)C        5</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(dict)</span></code></pre></div>
+<pre><code>##   Variant_Classification    effect
+## 1                 Silent    silent
+## 2             Synonymous    silent
+## 3               Missense nonsilent
+## 4      Missense_Mutation nonsilent
+## 5               Nonsense      null
+## 6      Nonsense_Mutation      null</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(V)</span></code></pre></div>
+<pre><code>##       gene    expr reptime hic
+## 1  ALOX12B 1528802     272  26
+## 2  ALOX15B 1528802     272  26
+## 3   ALOXE3 1455014     202  31
+## 4 ARHGEF15  772200     257  20
+## 5   ATP1B2 2069567     213  34
+## 6    AURKB  870950     218  18</code></pre>
+<p>As regard to <code>DriverPathway()</code>, The input data is a
+mutation matrix for which a sample is shown below.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DriverGenePathway)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(SampleMutationMatrix)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head.matrix</span>(mutation_matrix)</span></code></pre></div>
+<pre><code>##         IFRD2 RAPGEF1 BMPR1B CDKN2C NF2 PAK3 ERAS SRC MAP2K6 CDKN2B NOTCH2 JUNB
+## L_16616     0       0      0      0   0    0    0   0      0      0      0    0
+## L_17222     0       0      0      0   0    0    0   0      0      0      0    0
+## L_16951     0       0      0      0   0    0    0   0      0      0      0    0
+## L_16921     0       0      0      0   1    0    0   0      0      0      0    0
+## L_16963     0       0      0      0   0    0    0   0      0      0      0    0
+## L_17152     0       0      0      0   0    0    0   0      0      0      0    0
+##         JAK3 ACVRL1 PDGFRB STAT5A MYC RAB6C FBXW7 SLC7A4 CDK7 RALB HRAS FYN
+## L_16616    0      0      0      0   0     0     0      0    0    0    0   0
+## L_17222    0      0      0      0   0     0     0      0    0    0    0   0
+## L_16951    0      0      0      0   0     0     0      0    0    0    0   0
+## L_16921    0      0      0      0   0     0     0      0    0    0    0   0
+## L_16963    0      0      0      0   0     0     0      0    0    0    0   0
+## L_17152    0      0      0      0   0     0     0      0    0    0    0   0
+##         STAT3 NRK PTPRG KIAA1804 FLT1 VAV3 ACVR1B EPHA3 ROCK1 MAP2K5 EPHB6
+## L_16616     0   0     0        0    0    0      0     0     0      0     0
+## L_17222     0   0     0        0    0    0      0     0     0      0     0
+## L_16951     0   0     0        0    0    0      0     0     0      0     0
+## L_16921     0   0     0        0    0    0      0     0     0      0     0
+## L_16963     0   0     0        0    0    0      0     0     0      0     0
+## L_17152     0   0     0        0    0    0      0     0     0      0     0
+##         MERTK EPHA7 RALA RELA IKBKB CDH4 NOTCH4 PTPN11 ERCC2 PRKCB1 STAT5B
+## L_16616     0     0    0    0     0    0      0      0     0      0      0
+## L_17222     0     0    0    0     0    0      0      0     0      0      0
+## L_16951     0     0    0    0     0    0      0      0     0      0      0
+## L_16921     0     0    0    0     0    0      0      0     0      0      0
+## L_16963     0     0    0    0     0    0      0      0     0      0      0
+## L_17152     0     0    0    0     0    0      0      0     0      0      0
+##         PFTK1 MAP3K3 CHEK1 SHC3
+## L_16616     0      0     0    0
+## L_17222     0      0     0    0
+## L_16951     0      1     0    0
+## L_16921     0      0     0    0
+## L_16963     0      0     0    0
+## L_17152     0      0     0    0</code></pre>
+</div>
+<div id="preprocessing-input-data" class="section level2">
+<h2>4. Preprocessing input data</h2>
+<p>First it should be guaranteed that the input data contain necessary
+information. Then the mutation categories are arrived at through the
+hidden <code>preprocessing()</code> function (users could not call this
+function alone). This function outputs the preprocessed mutation and
+coverage data and result mutation categories as txt files. It also
+generates two plots as pdf files, which show the number of genes of each
+category and each effect.</p>
+<p><img src="data:application/pdf;base64,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Ly5ub3RkZWYgL3JpbmcgL2NlZGlsbGEgLy5ub3RkZWYgL2h1bmdhcnVtbGF1dCAvb2dvbmVrIC9jYXJvbiAvc3BhY2VdCj4+CmVuZG9iagoxMCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL05hbWUgL0YyIC9CYXNlRm9udCAvSGVsdmV0aWNhCi9FbmNvZGluZyA5IDAgUiA+PgplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAyMSAwMDAwMCBuIAowMDAwMDAwMTYzIDAwMDAwIG4gCjAwMDAwMDE0MDAgMDAwMDAgbiAKMDAwMDAwMTQ4MyAwMDAwMCBuIAowMDAwMDAxNTk1IDAwMDAwIG4gCjAwMDAwMDE2MjggMDAwMDAgbiAKMDAwMDAwMDIxMiAwMDAwMCBuIAowMDAwMDAwMjkyIDAwMDAwIG4gCjAwMDAwMDQzMjMgMDAwMDAgbiAKMDAwMDAwNDU4MCAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDExIC9JbmZvIDEgMCBSIC9Sb290IDIgMCBSID4+CnN0YXJ0eHJlZgo0Njc3CiUlRU9GCg==" width="500">
+<img src="data:application/pdf;base64,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VtGaorH1futbixWKRcU3NrhsqNuI2ijYOLhp7qaqTR9LeCUXS61LK0rfb+ZuvviVzVeVX33akrRlsMyhbM9WzFbh1uvb3LcdKFcuzy8f2x6yvXMHY0fJjpc7l+y8UGFXUbeLsEuyS1oZXNldZVC1tep9dUr1SI1XTXutZu2m2te7ebuv7PHY01anVVda926vYO/Ner/6zgajhop9mH05+x42Rjf2f836urlJo6m06cN+4X7pgYgDfc2Ozc0tmi1lrXCrpHXyYMLBy994f9Pdxmyrb6e3lx4ChySHHn+b+O31w0GHe4+wjrR9Z/hdbQe1o6QT6lzeOdWV0iXtjusePhp4tLfHpafje8vv9x/TPVZzXOV42QnCiaITn07mn5w+lXXq6enk02O9S3rvnIk9c60vvG/wbNDZ8+d8z53p9+w/ed71/LELzheOXmRd7LrkcKlzwH6g4wf7HzoGHQY7hxyHui87Xe4Znjd84or7ldNXva+euxZw7dLI/JHh61HXb95IuCG9ybv56Fb6ree3c27P3FlzF3235J7SvYr7mvcbfjT9sV3qID0+6j068GDBgztj3LEnP2X/9H686CH5YcWEzkTzI9tHxyZ9Jy8/Xvh4/EnWk5mnxT8r/1z7zOTZd794/DIwFTs1/lz0/NOvm1+ov9j/0u5l73TY9P1XGa9mXpe8UX9z4C3rbf+7mHcTM7nvse8rP5h+6PkY9PHup4xPn34D94Tz+2VuZHN0cmVhbQplbmRvYmoKOSAwIG9iago8PAovVHlwZSAvRW5jb2RpbmcgL0Jhc2VFbmNvZGluZyAvV2luQW5zaUVuY29kaW5nCi9EaWZmZXJlbmNlcyBbIDQ1L21pbnVzIDk2L3F1b3RlbGVmdAoxNDQvZG90bGVzc2kgL2dyYXZlIC9hY3V0ZSAvY2lyY3VtZmxleCAvdGlsZGUgL21hY3JvbiAvYnJldmUgL2RvdGFjY2VudAovZGllcmVzaXMgLy5ub3RkZWYgL3JpbmcgL2NlZGlsbGEgLy5ub3RkZWYgL2h1bmdhcnVtbGF1dCAvb2dvbmVrIC9jYXJvbiAvc3BhY2VdCj4+CmVuZG9iagoxMCAwIG9iago8PCAvVHlwZSAvRm9udCAvU3VidHlwZSAvVHlwZTEgL05hbWUgL0YyIC9CYXNlRm9udCAvSGVsdmV0aWNhCi9FbmNvZGluZyA5IDAgUiA+PgplbmRvYmoKeHJlZgowIDExCjAwMDAwMDAwMDAgNjU1MzUgZiAKMDAwMDAwMDAyMSAwMDAwMCBuIAowMDAwMDAwMTYzIDAwMDAwIG4gCjAwMDAwMDEyNDcgMDAwMDAgbiAKMDAwMDAwMTMzMCAwMDAwMCBuIAowMDAwMDAxNDQyIDAwMDAwIG4gCjAwMDAwMDE0NzUgMDAwMDAgbiAKMDAwMDAwMDIxMiAwMDAwMCBuIAowMDAwMDAwMjkyIDAwMDAwIG4gCjAwMDAwMDQxNzAgMDAwMDAgbiAKMDAwMDAwNDQyNyAwMDAwMCBuIAp0cmFpbGVyCjw8IC9TaXplIDExIC9JbmZvIDEgMCBSIC9Sb290IDIgMCBSID4+CnN0YXJ0eHJlZgo0NTI0CiUlRU9GCg==" width="500"></p>
+</div>
+<div id="background-mutation-rate" class="section level2">
+<h2>5. Background mutation rate</h2>
+<p>After preprocessing, the output data including mutation data and
+coverage data go into the hidden <code>BMR()</code> function in order to
+get the background mutation rate. The input preOutV refers to covariate
+data. The parameter <code>bmr</code>, which represent the default
+background mutation rate is set 1.2e-06, could be modified by the
+<code>bmr</code> parameter in <code>DriverGene()</code> function. The
+output of <code>BMR()</code> is a list of matrix which is a intermediate
+result, will then be used in varified specific gene detecting
+methods.</p>
+</div>
+<div id="identify-driver-genes-using-drivergene-function" class="section level2">
+<h2>6. Identify driver genes using <code>DriverGene()</code>
+function</h2>
+<p>There are five hypothesis test methods according to
+<code>p_class</code> parameter, which are all encapsulated in the
+sigGenes function, i.e. <code>BB</code> represents beta binomial
+distribution test; <code>FCPT</code> represents Fisher combined P-value
+test; <code>LRT</code> represents likelihood ratio test; <code>CT</code>
+represents convolution test; <code>projection</code> represents
+projection test method; <code>allTest</code> represents the mutual
+results of all methods. The parameter <code>sigThreshold</code>
+represents the threshhold of q-value to judge if the gene is
+significant. Here is a sample of the usage of <code>DriverGene()</code>,
+for more information of the function and parameters, see help
+documentation.</p>
+<pre><code>DriverGene(
+  M,C,V,dict,chr_files_directory=&quot;chr_files_hg19&quot;,categ_flag=NaN, bmr=1.2e-6,
+  p_class=&quot;BB&quot;, sigThreshold = 0.05)</code></pre>
+<p>The function outputs txt files of result significant genes.</p>
+</div>
+<div id="identify-driver-pathway-using-driverpathway-function" class="section level2">
+<h2>7. Identify driver pathway using <code>DriverPathway()</code>
+function</h2>
+<p>The DriverGenePathway package also provides a de novo method based on
+mutual exclusivity and coverage to search driver pathway. The only
+mandatory input of function <code>DriverPathway()</code> is mutation
+matrix that is a 0-1 mutation matrix where rows represent patients,
+columns represent genes as follows.</p>
+<pre><code>data(SampleMutationMatrix)
+head(mutation_matrix)</code></pre>
+<p><code>DriverPathway()</code> function uses the Genetic algorithm as
+optimization method, for which some parameters are supposed to be set.
+The parameters have default values, see the help documentation. In order
+to reach the optimum result, it is suggested that the parameters be set
+manually. Underneath goes a sample of this function, which outputs a
+list.</p>
+<pre><code>denovoOut &lt;- DriverPathway(mutation_matrix,
+  driver_size=3, pop_size=200, iters=500, permut_time=1000)</code></pre>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
