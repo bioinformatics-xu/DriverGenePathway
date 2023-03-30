@@ -3,7 +3,7 @@
 #'
 #' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
 #' @param driver_size The size of identified driver gene set, defaulted to 3.
-#' @param pop_size The population size of GA, defaulted to 200.
+#' @param pop_size The population size of GA which should be adjusted according the number of samples, defaulted to 100.
 #' @param iters The iteration time of GA, defaulted to 500.
 #' @param permut_time The times of permutation test, defaulted to 1000.
 #' @param process_bmr The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.
@@ -15,7 +15,7 @@
 #' @export
 DriverPathway <- function(mutation_data,
                           driver_size=3,
-                          pop_size=200,
+                          pop_size=100,
                           iters=500,
                           permut_time=1000,process_bmr=1.2e-6) {
   obj_weight <- vector()
