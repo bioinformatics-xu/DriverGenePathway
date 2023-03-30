@@ -7,7 +7,7 @@
 #' @param iters The iteration time of GA, defaulted to 500.
 #' @param permut_time The times of permutation test, defaulted to 1000.
 #' @param process_bmr The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.
-#' @return Output of DriverPathway is the identified driver gene set.
+#' @return Output of DriverPathway is the mutation matrix, identified driver gene set, and p-value.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @examples
 #' data(SampleMutationMatrix)
@@ -113,9 +113,8 @@ DriverPathway <- function(mutation_data,
     driver_geneset <- colnames(mutation_matrix)[which(max_pop==1)]
 
   }
-
   p_value <- mulExclusive_significance(mutation_matrix,driver_geneset,permut_time = permut_time)
-  G <- list(driver_geneset=driver_geneset,p_value=p_value)
+  G <- list(mutation_matrix=mutation_matrix,driver_geneset=driver_geneset,p_value=p_value)
   #utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)
   return(G)
 }
