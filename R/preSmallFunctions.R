@@ -524,7 +524,7 @@ preprocessGenerateCategContext65 <- function()
 
 #preprocessing covariate files
 # fill missing data in covariate file
-covariate_preprocessing <- function(M,V,k=100){
+covariate_preprocessing <- function(M,V,k=10){
   cluster=expr=reptime=hic=NULL
   # table gene effects(noncoding, nonsilent, silent, null) for each gene
   Mtable <- tapply(M$effect,M$gene,table)
@@ -541,7 +541,7 @@ covariate_preprocessing <- function(M,V,k=100){
     # fill geneEffect with values in mutation M table
   }
 
-  km_result <- stats::kmeans(geneEffect, k, nstart = 100,iter.max = 2000)
+  km_result <- stats::kmeans(geneEffect, k,iter.max = 1000)
   # print(km_result)
   geneEffect<- cbind(geneEffect, cluster = km_result$cluster)
 
