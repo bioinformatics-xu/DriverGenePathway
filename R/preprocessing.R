@@ -493,11 +493,13 @@ if(method==1){
 
   #STEP3 Category Discovery
   #Category Discovery
-  preprocessed_file_stem <- paste(output_filestem,"preprocess",sep = "_")
-  if(!dir.exists(preprocessed_file_stem)){
-    dir.create(preprocessed_file_stem)
+  if(preprocessedOutput){
+    preprocessed_file_stem <- paste(output_filestem,"preprocess",sep = "_")
+    if(!dir.exists(preprocessed_file_stem)){
+      dir.create(preprocessed_file_stem)
+    }
+    setwd(preprocessed_file_stem)
   }
-  setwd(preprocessed_file_stem)
 
   Nn <- preprocessCollapseNn65to32(Y)
   P <- data.frame(max_k = ncategs,mutcategs_report_filename =
@@ -614,7 +616,9 @@ if(preprocessedOutput){
 
 
 if(method==3){
-  setwd("..")
+  if(preprocessedOutput){
+    setwd("..")
+  }
 }
 cat(sprintf("Preprocessing finished. \n"))
 
