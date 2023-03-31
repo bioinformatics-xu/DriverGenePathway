@@ -61,7 +61,7 @@ evalFunc <- function(mutation_matrix,chromosome){
   return(returnVal)
 }
 
-mulExclusive_significance <- function(mutation_matrix,driver_geneset,permut_time=1000){
+mulExclusive_significance_subSet <- function(mutation_matrix, driver_geneset, permut_time = 1000){
   m <- nrow(mutation_matrix)
   weight_score <- rep(0,permut_time)
   n <- length(driver_geneset)
@@ -82,7 +82,21 @@ mulExclusive_significance <- function(mutation_matrix,driver_geneset,permut_time
 
   p_value <- sum(evalFunc(mutation_matrix,chromosome_data) >= weight_score)/permut_time
   return(p_value)
+}
 
+mulExclusive_significance <- function(mutation_matrix,driver_geneset,permut_time=1000){
+  if(any(class(driver_geneset) == "matrix")){
+    p_value_list <- c()
+    for (gs in 1:nrow(driver_geneset)) {
+      driver_geneset_sub <- driver_geneset[gs,]
+      p_value <- mulExclusive_significance_subSet(mutation_matrix, driver_geneset_sub, permut_time)
+      p_value_list <- c(p_value_list, p_value)
+    }
+    return(p_value_list)
+  }else if(class(driver_geneset) == "character"){
+    p_value <- mulExclusive_significance_subSet(mutation_matrix, driver_geneset, permut_time)
+    return(p_value)
+  }
 }
 
 # generate input mutation matrix for AWEMP
