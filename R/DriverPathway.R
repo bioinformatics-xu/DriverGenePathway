@@ -15,8 +15,8 @@
 #' @export
 DriverPathway <- function(mutation_data,
                           driver_size=3,
-                          pop_size=100,
-                          iters=500,
+                          pop_size=200,
+                          iters=1000,
                           permut_time=1000,process_bmr=1.2e-6) {
   obj_weight <- vector()
   mutation_matrix <- preprocessing_mutation_data(mutation_data,process_bmr)
@@ -111,8 +111,8 @@ DriverPathway <- function(mutation_data,
     }
   }else{
     driver_geneset <- colnames(mutation_matrix)[which(max_pop==1)]
-
   }
+
   p_value <- mulExclusive_significance(mutation_matrix,driver_geneset,permut_time = permut_time)
   G <- list(mutation_matrix=mutation_matrix,driver_geneset=driver_geneset,p_value=p_value)
   #utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)
