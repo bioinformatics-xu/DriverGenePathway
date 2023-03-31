@@ -5,12 +5,21 @@ DriverGenePathway is to identify driver genes and driver pathways in cancer base
 DriverGenePathway is free for non-commerical use only.
 
 ## Installation
+
+### Local Installation
 ```
 Download DriverGenePathway package.
 Put DriverGenePathway package in your working directory of Rstudio.
 Run the following command in Rstudio console:
 install.packages("DriverGenePathway_1.0.0.tar.gz", repos = NULL, type = "source").
 ```
+
+### Github Installation
+```
+library(devtools)
+install_github("bioinformatics-xu/DriverGenePathway")
+```
+
 ## Computational procedure
 DriverGene and DriverPathway are two main functions in DriverGenePathway to identify driver genes and driver pathways.
 
