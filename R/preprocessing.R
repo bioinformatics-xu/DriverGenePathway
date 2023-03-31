@@ -608,6 +608,9 @@ if(preprocessedOutput){
                      sep = "\t",quote = F,row.names = F)
 }
 
+plotCategory(M)
+plotEffect(M)
+
 if(method==3){
   setwd("..")
 }

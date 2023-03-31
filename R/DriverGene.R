@@ -29,8 +29,6 @@ DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=N
   if(!is.null(Mutation)){
     preOut <- preprocessing(M=Mutation, C=Coverage, dict=MutationDict,V=Covariate,
                             chr_files_directory=chr_files_directory,categ_flag=categ_flag, output_filestem=output_filestem)
-    plotCategory(preOut$M)
-    plotEffect(preOut$M)
 
     BMR_out <- BMR(preOut$M, preOut$C, preOut$V, bmr)
     sigGenes <- sigGenes(BMR_out, p_class,sigThreshold, output_filestem=output_filestem)
