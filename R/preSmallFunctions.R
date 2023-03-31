@@ -144,7 +144,7 @@ preprocessConcatStructsKeepFields <- function(K,K2){
 #' @param P The frame containing the expected number of categs and the name of output mutation file
 #' @details Through analysing the mutation numbers of the 32 types previously defined, this function finds several
 #' reasonable mutation categories as categs. The default number of categs is 4.
-preprocessFindMutCateg <- function(Nn,P){
+preprocessFindMutCateg <- function(Nn,P,preprocessedOutput=TRUE){
 
   #####   subfunctions of find_mut_categs  #####
 
@@ -347,8 +347,10 @@ preprocessFindMutCateg <- function(Nn,P){
     ord <- order(stats$relrate,decreasing = T)
     for (j in 1:length(parts)) {
       i <- ord[j]
-      subfprintf("%s  n %.0f  N %.0f   rate  %e (%.4fx)...",ck$name[i],stats$n[i],stats$N[i],stats$rate[i],stats$relrate[i])
-      #print(sprintf("%s  n %.0f  N %.0f   rate  %e (%.4fx)...\n",ck$name[i],stats$n[i],stats$N[i],stats$rate[i],stats$relrate[i]))
+      if(preprocessedOutput){
+        subfprintf("%s  n %.0f  N %.0f   rate  %e (%.4fx)...",ck$name[i],stats$n[i],stats$N[i],stats$rate[i],stats$relrate[i])
+        #print(sprintf("%s  n %.0f  N %.0f   rate  %e (%.4fx)...\n",ck$name[i],stats$n[i],stats$N[i],stats$rate[i],stats$relrate[i]))
+      }
     }
     ck <- ck[ord,]
     out <-list(ck,stats)
@@ -408,8 +410,10 @@ preprocessFindMutCateg <- function(Nn,P){
   initial <- unsplit
   leaves <- as.matrix(initial)
   for (k in 1:(P$max_k)) {
-    subfprintf("k=%d",k)
-    #cat(sprintf("k=%d",k))
+    if(preprocessedOutput){
+      subfprintf("k=%d",k)
+      #cat(sprintf("k=%d",k))
+    }
     if(k>1){
       old.leaves <- leaves
       leaves <- matrix(data = 0,nrow = 34^(k-1),ncol = k)

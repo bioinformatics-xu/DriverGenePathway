@@ -503,7 +503,7 @@ if(method==1){
   P <- data.frame(max_k = ncategs,mutcategs_report_filename =
                     paste(output_filestem,"_mutcateg_discovery.txt",sep = ""))
   PP <- P
-  Ks <- preprocessFindMutCateg(Nn,P)
+  Ks <- preprocessFindMutCateg(Nn,P,preprocessedOutput)
   K <- Ks[[ncategs]]
   c <- preprocessAssignCateg(K)
   X$kidx <- matrix(data = NaN,nrow = nrow(X),ncol = 1)
@@ -606,10 +606,12 @@ if(preprocessedOutput){
   #(3) categories file
   utils::write.table(as.matrix(K),file = "MutationCategories.txt",
                      sep = "\t",quote = F,row.names = F)
+
+  plotCategory(M)
+  plotEffect(M)
 }
 
-plotCategory(M)
-plotEffect(M)
+
 
 if(method==3){
   setwd("..")
