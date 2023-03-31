@@ -23,10 +23,10 @@
 #' @return Signifiant genes
 
 
-sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sigThreshold = 0.05)
+sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sigThreshold = 0.05)
 {
   q.btBinom = p.btBinom = q.fisher = q.lrt = q.ct = q.projection = NULL
-  sig_filestem <- paste(output_filestem,"sigGenes_out",sep = "_")
+  sig_filestem <- paste(output_filestem,"sigGenes",sep = "_")
   if(!dir.exists(sig_filestem)){
     dir.create(sig_filestem)
   }

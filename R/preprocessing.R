@@ -20,7 +20,7 @@
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
-                          output_filestem = "Preprocessed",preprocessedOutput=TRUE)
+                          output_filestem = "output",preprocessedOutput=TRUE)
 {is_coding = is_silent = categ = gene = effect = categ_idx = NULL
 
 if(is.null(C)){
@@ -493,7 +493,7 @@ if(method==1){
 
   #STEP3 Category Discovery
   #Category Discovery
-  preprocessed_file_stem <- paste(output_filestem,"outputs",sep = "_")
+  preprocessed_file_stem <- paste(output_filestem,"preprocess",sep = "_")
   if(!dir.exists(preprocessed_file_stem)){
     dir.create(preprocessed_file_stem)
   }
