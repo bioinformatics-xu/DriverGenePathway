@@ -24,16 +24,16 @@
 #' @export
 DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,
                        chr_files_directory=NULL,categ_flag=NaN, bmr=1.2e-6,
-                       p_class="BB", sigThreshold = 0.05,output_filestem="output")
+                       p_class="BB", sigThreshold = 0.05)
 {
   if(!is.null(Mutation)){
     preOut <- preprocessing(M=Mutation, C=Coverage, dict=MutationDict,V=Covariate,
-                            chr_files_directory=chr_files_directory,categ_flag=categ_flag,output_filestem=output_filestem)
+                            chr_files_directory=chr_files_directory,categ_flag=categ_flag)
     plotCategory(preOut$M)
     plotEffect(preOut$M)
 
     BMR_out <- BMR(preOut$M, preOut$C, preOut$V, bmr)
-    sigGenes <- sigGenes(BMR_out, p_class,output_filestem = output_filestem,sigThreshold)
+    sigGenes <- sigGenes(BMR_out, p_class,sigThreshold)
     return(sigGenes)
   }else{
     cat("Error:invalid input mutation data")
