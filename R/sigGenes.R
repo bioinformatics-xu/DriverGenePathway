@@ -86,6 +86,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
     sig_betabinomial <- sig_betabinomial[order(sig_betabinomial$q.btBinom,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_betabinomial,file = output_file,row.names = F)
+    setwd("..")
+    return(sig_betabinomial)
   }
 
   if(p_class == "FCPT"){
@@ -116,6 +118,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
     sig_fisher <- sig_fisher[order(sig_fisher$q.fisher,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_fisher,file = output_file,row.names = F)
+    setwd("..")
+    return(sig_fisher)
   } # end of if(p_class == "fisher")
 
   if(p_class == "LRT"){
@@ -153,6 +157,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
     sig_lrt <- sig_lrt[order(sig_lrt$q.lrt,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_lrt,file = output_file,row.names = F)
+    setwd("..")
+    return(sig_lrt)
   }
 
   if(p_class == "CT"){
@@ -233,7 +239,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
     sig_ct <- sig_ct[order(sig_ct$q.ct,decreasing = F),]
     output_file <- paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_ct,file = output_file,row.names = F)
-
+    setwd("..")
+    return(sig_ct)
   }
 
   if(p_class == "PJ"){
@@ -417,7 +424,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
     # utils::write.table(sig_projection,file = output_file,quote = F,sep = "\t",row.names = F)
     output_file <- paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_projection,file = output_file,row.names = F)
-
+    setwd("..")
+    return(sig_projection)
   }
 
   if(p_class == "allTest"){
@@ -937,12 +945,10 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "sigout",sig
                  filename = "vennplot",
                  fill =c("cornflowerblue","green","yellow","darkorchid1","red"),
                  cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black"),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
-
+    setwd("..")
     setwd("..")
     return(sigGenes_final)
-
   }  # end of if(p_class == "all")
-setwd("..")
 } # of MutSig_runCV function
 
 
