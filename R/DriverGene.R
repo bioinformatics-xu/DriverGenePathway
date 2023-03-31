@@ -17,13 +17,13 @@
 #' "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
 #' method; "allTest" represents the mutual results of all methods.
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant.
-#' @param output_filestem The parameters to name the output files, defaulted to "output".
+#' @param output_filestem The parameters to name the output files, defaulted to "driverGenes".
 #' @return Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
 #' pdf files as well.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @export
 DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,
-                       chr_files_directory=NULL,categ_flag=NaN, bmr=1.2e-6,
+                       chr_files_directory=NULL,categ_flag=NaN, bmr=1.2e-6,output_filestem="driverGenes",
                        p_class="BB", sigThreshold = 0.05)
 {
   if(!is.null(Mutation)){
@@ -33,7 +33,7 @@ DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=N
     plotEffect(preOut$M)
 
     BMR_out <- BMR(preOut$M, preOut$C, preOut$V, bmr)
-    sigGenes <- sigGenes(BMR_out, p_class,sigThreshold)
+    sigGenes <- sigGenes(BMR_out, p_class,sigThreshold, output_filestem=output_filestem)
     return(sigGenes)
   }else{
     cat("Error:invalid input mutation data")
