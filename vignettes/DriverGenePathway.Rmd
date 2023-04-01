@@ -75,14 +75,14 @@ There are five hypothesis test methods according to `p_class` parameter, which a
 
 ```{}
 driverGenes <- DriverGene(
-  M,C,V,dict,chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
+  M,C,V,dict,categ_flag=NaN, bmr=1.2e-6,
   p_class="BB", sigThreshold = 0.05)
 ```
 The function outputs txt files of result significant genes.
 
 ## 7. Identify driver pathway using `DriverPathway()` function
 
-The DriverGenePathway package also provides a de novo method based on mutual exclusivity and coverage to search driver pathway. The only mandatory input of function `DriverPathway()` is mutation matrix that is a 0-1 mutation matrix where rows represent patients, columns represent genes as follows. 
+The DriverGenePathway package also provides a de novo method based on mutual exclusivity and coverage to search driver pathway. The only mandatory input of function `DriverPathway()` is MAF file or 0/1 mutation matrix where rows represent patients, columns represent genes as follows. If the input is MAF, then preprocessing procedure in DriverGene function will be performed to get 0/1 mutation matrix.
 
 ```{}
 data(SampleMutationMatrix)

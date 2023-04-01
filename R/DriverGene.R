@@ -6,13 +6,12 @@
 #' from according to the parameter p_class, i.e. binomial distribution test, represents beta binomial distribution test,
 #' Fisher combined P-value test, likelihood ratio test, convolution test and 2D-projection method, which are all encapsulated in the sigGenes function.
 #' @param Mutation Mutation maf data, mandatory data.
-#' @param Coverage Coverage raw data, read from exome_full192.coverage.txt in MutSigCV by default.
-#' @param Covariate Covariate data, read from "gene.covariates.txt" in MutSigCV by default.
-#' @param MutationDict Mutation dictionary to map Variant_Classification to mutation effect in mutation data, read from "mutation_type_dictionary_file.txt" in MutSigCV by default.
-#' @param chr_files_directory Chromosome files directory, hg19 or hg38.
+#' @param Coverage Coverage raw data which can be input by users. By default, the function will automatically download exome_full192.coverage.txt from MutSigCV as Coverage.
+#' @param Covariate Covariate data which can be input by users. By default, the function will automatically download "gene.covariates.txt" from MutSigCV as Covariate.
+#' @param MutationDict Mutation dictionary to map Variant_Classification to mutation effect in mutation data. Be default, the function will automatically download "mutation_type_dictionary_file.txt" from MutSigCV as MutationDict.
+#' @param chr_files_directory Chromosome files directory, hg19 or hg18, which can be input by users. By default, the function will automatically download "chr_files_hg19.zip" from MutSigCV as chr_files_directory.
 #' @param categ_flag Mutation category number, should be either NaN or numeric, defaulted to NaN.
-#' @param bmr The default background mutation rate is 1.2e-6, and the value alters when
-#' function ends.
+#' @param bmr The default background mutation rate is 1.2e-6, and the value alters when function ends.
 #' @param p_class Hypothesis test methods. "BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test;
 #' "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
 #' method; "allTest" represents the mutual results of all methods.

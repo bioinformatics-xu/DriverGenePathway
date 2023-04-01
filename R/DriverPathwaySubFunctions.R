@@ -406,26 +406,6 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     G$n_silent <- apply(n_silent[,ncat+1,],1,sum)
     G$n_noncoding <- apply(n_noncoding[,ncat+1,],1,sum)
 
-    # PROCESS COVARIATES
-    cat("Processing covariates... \n")
-
-    V <- matrix(data = NaN,nrow = ng,ncol = nv)
-    for (i in 1:nv) {
-      V[,i] <- G[[cvnames[i]]]
-    }
-    colnames(V) <- cvnames
-
-    # Find Bagels
-    cat(sprintf("Finding bagels...  \n"))
-    max_neighbors <- 50
-    qual_min <- 0.05
-
-    Z <- scale(V)
-
-    G$nnei <- NaN
-    G$x <- NaN
-    G$X <- NaN
-
     G1 <- G
     G1$pb <- NaN
     for (i in 1:nrow(G)) {
@@ -435,30 +415,22 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     ord_pb <- order(G1$qb)
     G1 <- G1[ord_pb,]
     analysis_gene <- G1$gene[which(G1$pb <= 0.1)]
-    #print(paste("number of analysis genes (p value < 0.1)",length(analysis_gene)))
     if(length(analysis_gene) < 50){
       analysis_gene <- G1$gene[order(G1$pb)[1:50]]
-      print(paste("number of analysis genes (50) ",length(analysis_gene)))
     }
 
     if(length(analysis_gene) > 500){
       analysis_gene <- G1$gene[which(G1$pb <= 0.05)]
-      #print(paste("number of analysis genes (p value < 0.05) ",length(analysis_gene)))
       if(length(analysis_gene) > 500){
         analysis_gene <- G1$gene[which(G1$pb <= 0.01)]
-        #print(paste("number of analysis genes (p value < 0.01) ",length(analysis_gene)))
         if(length(analysis_gene) > 500){
           analysis_gene <- G1$gene[which(G1$qb <= 0.05)]
-          #print(paste("number of analysis genes (q value < 0.05) ",length(analysis_gene)))
           if(length(analysis_gene) > 500){
             analysis_gene <- G1$gene[which(G1$qb <= 0.01)]
-            #print(paste("number of analysis genes (q value < 0.01) ",length(analysis_gene)))
             if(length(analysis_gene) > 500){
               analysis_gene <- G1$gene[which(G1$qb <= 0.005)]
-              #print(paste("number of analysis genes (q value < 0.005) ",length(analysis_gene)))
               if(length(analysis_gene) > 500){
                 analysis_gene <- G1$gene[which(G1$qb <= 0.001)]
-                #print(paste("number of analysis genes (q value < 0.001) ",length(analysis_gene)))
               }
             }
           }

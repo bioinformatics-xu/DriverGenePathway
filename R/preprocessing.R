@@ -14,7 +14,7 @@
 #' @param chr_files_directory Chromosome files directory, hg19 or hg18.
 #' @param categ_flag Mutation category number, should be either NaN or numeric.
 #' @param output_filestem Unified prefix of output data, could be modified as well.
-#' @param preprocessedOutput If output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.
+#' @param preprocessedOutput Whether output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.
 #' @importFrom utils download.file unzip
 #' @importFrom stats p.adjust
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
@@ -612,8 +612,6 @@ if(preprocessedOutput){
   plotCategory(M)
   plotEffect(M)
 }
-
-
 
 if(method==3){
   if(preprocessedOutput){
