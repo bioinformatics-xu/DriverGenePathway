@@ -8,27 +8,30 @@ This function searches driver pathway using de novo method based on mutual exclu
 DriverPathway(
   mutation_data,
   driver_size = 3,
-  pop_size = 100,
-  iters = 500,
+  pop_size = 200,
+  iters = 1000,
   permut_time = 1000,
   process_bmr = 1.2e-06
 )
 }
 \arguments{
-\item{mutation_data}{0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.}
+\item{mutation_data}{0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
+If mutation_data is MAF file, then preprocessing procedure will be performed using coverage data, covariate data, mutation dictionary, and chr_files_directory.
+These files can be input be users and named "coverage.txt.$" for coverage data, "covariates.txt$" for covariate data, "dictionary_file.txt$" for mutation dictionary, and "^chr_files_hg" for chr_files_directory.
+If these files cannot be detected, they will be downloaded from the MutSigCV website which will take some time.}
 
 \item{driver_size}{The size of identified driver gene set, defaulted to 3.}
 
-\item{pop_size}{The population size of GA which should be adjusted according the number of samples, defaulted to 100.}
+\item{pop_size}{The population size of GA which should be adjusted according the number of samples, defaulted to 200.}
 
-\item{iters}{The iteration time of GA, defaulted to 500.}
+\item{iters}{The iteration time of GA, defaulted to 1000.}
 
 \item{permut_time}{The times of permutation test, defaulted to 1000.}
 
 \item{process_bmr}{The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.}
 }
 \value{
-Output of DriverPathway is the mutation matrix, identified driver gene set, and p-value.
+Output of DriverPathway is a list including the mutation matrix, identified driver gene set, and p-value.
 }
 \description{
 Search driver pathway using de novo method

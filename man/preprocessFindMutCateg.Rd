@@ -4,12 +4,14 @@
 \alias{preprocessFindMutCateg}
 \title{Finding mutation categories}
 \usage{
-preprocessFindMutCateg(Nn, P)
+preprocessFindMutCateg(Nn, P, preprocessedOutput = TRUE)
 }
 \arguments{
 \item{Nn}{The frame containing numbers of coverages and mutations for each of the 32 types}
 
 \item{P}{The frame containing the expected number of categs and the name of output mutation file}
+
+\item{preprocessedOutput}{Whether output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed files; otherwise not.}
 }
 \description{
 Turning the number of categories from 32 to a reasonable expected value, through analysing the numbers of

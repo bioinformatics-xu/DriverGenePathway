@@ -7,7 +7,7 @@
 sigGenes(
   BMR_out,
   p_class = "allTest",
-  output_filestem = "sigout",
+  output_filestem = "output",
   sigThreshold = 0.05
 )
 }

@@ -142,6 +142,7 @@ preprocessConcatStructsKeepFields <- function(K,K2){
 #' mutations and coverages.
 #' @param Nn The frame containing numbers of coverages and mutations for each of the 32 types
 #' @param P The frame containing the expected number of categs and the name of output mutation file
+#' @param preprocessedOutput Whether output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed files; otherwise not.
 #' @details Through analysing the mutation numbers of the 32 types previously defined, this function finds several
 #' reasonable mutation categories as categs. The default number of categs is 4.
 preprocessFindMutCateg <- function(Nn,P,preprocessedOutput=TRUE){

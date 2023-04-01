@@ -11,7 +11,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 
 
-<meta name="date" content="2023-03-30" />
+<meta name="date" content="2023-04-01" />
 
 <title>DriverGenePathway</title>
 
@@ -345,7 +345,7 @@ pathway</h3>
 School of Computer and Information Technology<br />
 Liaoning Normal University<br />
 Dalian China, 116029</div></h4>
-<h4 class="date">2023-03-30</h4>
+<h4 class="date">2023-04-01</h4>
 
 
 
@@ -532,7 +532,7 @@ significant. Here is a sample of the usage of <code>DriverGene()</code>,
 for more information of the function and parameters, see help
 documentation.</p>
 <pre><code>driverGenes &lt;- DriverGene(
-  M,C,V,dict,chr_files_directory=&quot;chr_files_hg19&quot;,categ_flag=NaN, bmr=1.2e-6,
+  M,C,V,dict,categ_flag=NaN, bmr=1.2e-6,
   p_class=&quot;BB&quot;, sigThreshold = 0.05)</code></pre>
 <p>The function outputs txt files of result significant genes.</p>
 </div>
@@ -541,9 +541,10 @@ documentation.</p>
 function</h2>
 <p>The DriverGenePathway package also provides a de novo method based on
 mutual exclusivity and coverage to search driver pathway. The only
-mandatory input of function <code>DriverPathway()</code> is mutation
-matrix that is a 0-1 mutation matrix where rows represent patients,
-columns represent genes as follows.</p>
+mandatory input of function <code>DriverPathway()</code> is MAF file or
+0/1 mutation matrix where rows represent patients, columns represent
+genes as follows. If the input is MAF, then preprocessing procedure in
+DriverGene function will be performed to get 0/1 mutation matrix.</p>
 <pre><code>data(SampleMutationMatrix)
 head(mutation_matrix)</code></pre>
 <p><code>DriverPathway()</code> function uses the Genetic algorithm as

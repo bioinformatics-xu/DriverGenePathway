@@ -12,34 +12,33 @@ DriverGene(
   chr_files_directory = NULL,
   categ_flag = NaN,
   bmr = 1.2e-06,
+  output_filestem = "output",
   p_class = "BB",
-  sigThreshold = 0.05,
-  output_filestem = "output"
+  sigThreshold = 0.05
 )
 }
 \arguments{
 \item{Mutation}{Mutation maf data, mandatory data.}
 
-\item{Coverage}{Coverage raw data, read from exome_full192.coverage.txt in MutSigCV by default.}
+\item{Coverage}{Coverage raw data which can be input by users. By default, the function will automatically download exome_full192.coverage.txt from MutSigCV as Coverage.}
 
-\item{Covariate}{Covariate data, read from "gene.covariates.txt" in MutSigCV by default.}
+\item{Covariate}{Covariate data which can be input by users. By default, the function will automatically download "gene.covariates.txt" from MutSigCV as Covariate.}
 
-\item{MutationDict}{Mutation dictionary to map Variant_Classification to mutation effect in mutation data, read from "mutation_type_dictionary_file.txt" in MutSigCV by default.}
+\item{MutationDict}{Mutation dictionary to map Variant_Classification to mutation effect in mutation data. Be default, the function will automatically download "mutation_type_dictionary_file.txt" from MutSigCV as MutationDict.}
 
-\item{chr_files_directory}{Chromosome files directory, hg19 or hg38.}
+\item{chr_files_directory}{Chromosome files directory, hg19 or hg18, which can be input by users. By default, the function will automatically download "chr_files_hg19.zip" from MutSigCV as chr_files_directory.}
 
 \item{categ_flag}{Mutation category number, should be either NaN or numeric, defaulted to NaN.}
 
-\item{bmr}{The default background mutation rate is 1.2e-6, and the value alters when
-function ends.}
+\item{bmr}{The default background mutation rate is 1.2e-6, and the value alters when function ends.}
+
+\item{output_filestem}{The parameters to name the output files, defaulted to "output".}
 
 \item{p_class}{Hypothesis test methods. "BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test;
 "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
 method; "allTest" represents the mutual results of all methods.}
 
 \item{sigThreshold}{The threshhold of q-value to judge if the gene is significant.}
-
-\item{output_filestem}{The parameters to name the output files, defaulted to "output".}
 }
 \value{
 Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
