@@ -851,6 +851,15 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     setwd("sigGenes_plots")
     gene = lgq.btBinom = lgq.fisher = lgq.LRT = lgq.CT = lgq.PJ = gene = NULL
 
+    # heatmap for q values
+    q2 <- q_result%>%
+      filter(!is.na(q.ct),!is.na(q.lrt),!is.na(q.fisher),!is.na(q.btBinom),!is.na(q.projection))
+    row.names(q2) <- q2[,1]
+    q2[,-1]%>%
+      as.matrix()%>%
+      t()%>%
+      pheatmap(show_colnames = T, fontsize_col = 7, filename = "q_value_heatmap.png")
+
     result_BB <- subset(sig_betabinomial,q.btBinom<0.1)
     if(nrow(result_BB)>100){
       result_BB1 <- result_BB[1:100,]
@@ -867,7 +876,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
       ggplot2::theme(axis.text.x = ggplot2::element_blank())+
       ggplot2::labs(title="Plot of result genes tested by beta-binomial", x ="Genes", y = "-log(q.beta-binomial)")
-    ggplot2::ggsave(BB, file="BB.pdf", width = 20)
+    ggplot2::ggsave(BB, file="BB.pdf", width = 15)
 
     result_FCPT <- subset(sig_fisher,q.fisher<0.1)
     if(nrow(result_FCPT)>100){
@@ -885,7 +894,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
       ggplot2::theme(axis.text.x = ggplot2::element_blank())+
       ggplot2::labs(title="Plot of result genes tested by fisher", x ="Genes", y = "-log(q.fisher)")
-    ggplot2::ggsave(FCPT, file="FCPT.pdf", width = 20)
+    ggplot2::ggsave(FCPT, file="FCPT.pdf", width = 15)
 
     result_LRT <- subset(sig_lrt,q.lrt<0.1)
     if(nrow(result_LRT)>100){
@@ -903,7 +912,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
       ggplot2::theme(axis.text.x = ggplot2::element_blank())+
       ggplot2::labs(title="Plot of result genes tested by lrt", x ="Genes", y = "-log(q.lrt)")
-    ggplot2::ggsave(LRT, file="LRT.pdf", width = 20)
+    ggplot2::ggsave(LRT, file="LRT.pdf", width = 15)
 
     result_CT <- subset(sig_ct,q.ct<0.1)
     if(nrow(result_CT)>100){
@@ -921,7 +930,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
       ggplot2::theme(axis.text.x = ggplot2::element_blank())+
       ggplot2::labs(title="Plot of result genes tested by ct", x ="Genes", y = "-log(q.ct)")
-    ggplot2::ggsave(CT, file="CT.pdf", width = 20)
+    ggplot2::ggsave(CT, file="CT.pdf", width = 15)
 
     result_PJ <- subset(sig_projection,q.projection<0.1)
     if(nrow(result_PJ)>100){
@@ -939,12 +948,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
       ggplot2::theme(axis.text.x = ggplot2::element_blank())+
       ggplot2::labs(title="Plot of result genes tested by 2D projection", x ="Genes", y = "-log(q.projection)")
-    ggplot2::ggsave(PJ, file="PJ.pdf", width = 20)
+    ggplot2::ggsave(PJ, file="PJ.pdf", width = 15)
 
     VennDiagram::venn.diagram(x=list(gene_projection=gene_projection,gene_betabinomial=gene_betabinomial,gene_fisher=gene_fisher,gene_lrt=gene_lrt,gene_ct=gene_ct),
                  filename = "vennplot",
-                 fill =c("cornflowerblue","green","yellow","darkorchid1","red"),
-                 cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black"),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
+                 fill =pal_npg()(5),
+                 cat.col =pal_npg()(5),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
+    #fill =c("cornflowerblue","green","yellow","darkorchid1","red")
+    #cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black")
     setwd("..")
     setwd("..")
     return(sigGenes_final)

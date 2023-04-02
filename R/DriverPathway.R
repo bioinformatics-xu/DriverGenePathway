@@ -1,5 +1,4 @@
-#' Search driver pathway using de novo method
-#' This function searches driver pathway using de novo method based on mutual exclusivity and coverage
+#' Search driver pathway using a de novo method, AWRMP(https://www.frontiersin.org/articles/10.3389/fgene.2019.00233/full).
 #'
 #' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
 #' If mutation_data is MAF file, then preprocessing procedure will be performed using coverage data, covariate data, mutation dictionary, and chr_files_directory.
