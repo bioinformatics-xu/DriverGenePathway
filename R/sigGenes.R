@@ -958,7 +958,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     ggsave(PJ, filename="PJ.pdf", width = 15)
 
     vennplot <- VennDiagram::venn.diagram(x=list(gene_projection=gene_projection,gene_betabinomial=gene_betabinomial,gene_fisher=gene_fisher,gene_lrt=gene_lrt,gene_ct=gene_ct),
-                 filename = "vennplot.pdf",
+                 filename = NULL,
                  fill =pal_npg()(5),
                  cat.col =pal_npg()(5),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
     pdf("vennplot.pdf")
