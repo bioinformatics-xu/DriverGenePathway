@@ -382,7 +382,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
           cat(sprintf("p=%d",p))
           flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
           if(!any(flag_finite)){
-            score_sample <- 10
+            score_sample <- 9
           }else{
             score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
           }
@@ -734,7 +734,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
         cat(sprintf("p=%d",p))
         flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
         if(!any(flag_finite)){
-          score_sample <- 10
+          score_sample <- 9
         }else{
           score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
         }
@@ -801,13 +801,13 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     gene_beta <- q_result[,1]
 
-    q_result <- subset(q_result,q.btBinom<=0.1,select=-p.btBinom)
+    q_result <- subset(q_result,q.btBinom<=sigThreshold,select=-p.btBinom)
 
     q_new <- sig_fisher
 
     gene_fisher <- q_new[,1]
 
-    q_new <- subset(q_new,q.fisher<=0.1)
+    q_new <- subset(q_new,q.fisher<=sigThreshold)
     q_union <- data.frame(gene=union(q_new$gene,q_result$gene))
     flag_old <- match(q_union$gene,q_result$gene)
     flag_new <- match(q_union$gene,q_new$gene)
@@ -819,7 +819,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     gene_lrt <- q_new[,1]
 
-    q_new <- subset(q_new,q.lrt<=0.1)
+    q_new <- subset(q_new,q.lrt<=sigThreshold)
     q_union <- data.frame(gene=union(q_new$gene,q_result$gene))
     flag_old <- match(q_union$gene,q_result$gene)
     flag_new <- match(q_union$gene,q_new$gene)
@@ -831,7 +831,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     gene_ct <- q_new[,1]
 
-    q_new <- subset(q_new,q.ct<=0.1)
+    q_new <- subset(q_new,q.ct<=sigThreshold)
     q_union <- data.frame(gene=union(q_new$gene,q_result$gene))
     flag_old <- match(q_union$gene,q_result$gene)
     flag_new <- match(q_union$gene,q_new$gene)
@@ -843,7 +843,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     gene_projection <- q_new[,1]
 
-    q_new <- subset(q_new,q.projection<=0.1)
+    q_new <- subset(q_new,q.projection<=sigThreshold)
     q_union <- data.frame(gene=union(q_new$gene,q_result$gene))
     flag_old <- match(q_union$gene,q_result$gene)
     flag_new <- match(q_union$gene,q_new$gene)
@@ -874,7 +874,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       t()%>%
       pheatmap(show_colnames = T, fontsize_col = 7, filename = "q_value_heatmap.pdf", display_numbers = T)
 
-    result_BB <- subset(sig_betabinomial,q.btBinom<0.1)
+    result_BB <- subset(sig_betabinomial,q.btBinom<sigThreshold)
     if(nrow(result_BB)>100){
       result_BB1 <- result_BB[1:100,]
     }
@@ -885,14 +885,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_BB1$lgq.btBinom <- -log10(result_BB1$q.btBinom+0.00000001)
     BB <- ggplot(result_BB1, aes(x=gene,y=lgq.btBinom))+
       geom_point(aes(size=2*(lgq.btBinom^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 5)+
+      geom_text_repel(aes(label = gene), size = 4)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
       labs(title="Plot of result genes tested by beta-binomial", x ="Genes", y = "-log(q.beta-binomial)")
     ggsave(BB, filename="BB.pdf", width = 15)
 
-    result_FCPT <- subset(sig_fisher,q.fisher<0.1)
+    result_FCPT <- subset(sig_fisher,q.fisher<sigThreshold)
     if(nrow(result_FCPT)>100){
       result_FCPT1 <- result_FCPT[1:100,]
     }
@@ -903,14 +903,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_FCPT1$lgq.fisher <- -log10(result_FCPT1$q.fisher+0.00000001)
     FCPT <- ggplot(result_FCPT1, aes(x=gene,y=lgq.fisher))+
       geom_point(aes(size=2*(lgq.fisher^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 5)+
+      geom_text_repel(aes(label = gene), size = 4)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
       labs(title="Plot of result genes tested by fisher", x ="Genes", y = "-log(q.fisher)")
     ggsave(FCPT, filename="FCPT.pdf", width = 15)
 
-    result_LRT <- subset(sig_lrt,q.lrt<0.1)
+    result_LRT <- subset(sig_lrt,q.lrt<sigThreshold)
     if(nrow(result_LRT)>100){
       result_LRT1 <- result_LRT[1:100,]
     }
@@ -921,14 +921,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_LRT1$lgq.LRT <- -log10(result_LRT1$q.lrt+0.00000001)
     LRT <- ggplot(result_LRT1, aes(x=gene,y=lgq.LRT))+
       geom_point(aes(size=2*(lgq.LRT^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 5)+
+      geom_text_repel(aes(label = gene), size = 4)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
       labs(title="Plot of result genes tested by lrt", x ="Genes", y = "-log(q.lrt)")
     ggsave(LRT, filename="LRT.pdf", width = 15)
 
-    result_CT <- subset(sig_ct,q.ct<0.1)
+    result_CT <- subset(sig_ct,q.ct<sigThreshold)
     if(nrow(result_CT)>100){
       result_CT1 <- result_CT[1:100,]
     }
@@ -939,14 +939,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_CT1$lgq.CT <- -log10(result_CT1$q.ct+0.00000001)
     CT <- ggplot(result_CT1,aes(x=gene,y=lgq.CT))+
       geom_point(aes(size=2*(lgq.CT^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 5)+
+      geom_text_repel(aes(label = gene), size = 4)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
       labs(title="Plot of result genes tested by ct", x ="Genes", y = "-log(q.ct)")
     ggsave(CT, filename="CT.pdf", width = 15)
 
-    result_PJ <- subset(sig_projection,q.projection<0.1)
+    result_PJ <- subset(sig_projection,q.projection<sigThreshold)
     if(nrow(result_PJ)>100){
       result_PJ1 <- result_PJ[1:100,]
     }
@@ -957,7 +957,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_PJ1$lgq.PJ <- -log10(result_PJ1$q.projection+0.00000001)
     PJ <- ggplot(result_PJ1,aes(x=gene,y=lgq.PJ))+
       geom_point(aes(size=2*(lgq.PJ^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 5)+
+      geom_text_repel(aes(label = gene), size = 4)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
