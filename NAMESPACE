@@ -2,6 +2,9 @@
 
 export(DriverGene)
 export(DriverPathway)
+importFrom(ggsci,pal_npg)
+importFrom(magrittr,"%>%")
+importFrom(pheatmap,pheatmap)
 importFrom(stats,p.adjust)
 importFrom(utils,download.file)
 importFrom(utils,unzip)

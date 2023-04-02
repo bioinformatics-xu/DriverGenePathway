@@ -17,11 +17,13 @@
 #' method; "allTest" represents the mutual results of all methods.
 #' @param output_filestem Unified prefix of output data, could be modified as well
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant
+#' @importFrom ggsci pal_npg
+#' @importFrom pheatmap pheatmap
+#' @importFrom magrittr %>%
 #' @details This function searches the significant genes using different hypothesis test methods,
 #' including binomial distribution test, beta binomial distribution test, Fisher combined P-value test,
 #' likelihood ratio test and convolution test.
 #' @return Signifiant genes
-
 
 sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sigThreshold = 0.05)
 {
@@ -853,12 +855,13 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     # heatmap for q values
     q2 <- q_result%>%
-      filter(!is.na(q.ct),!is.na(q.lrt),!is.na(q.fisher),!is.na(q.btBinom),!is.na(q.projection))
+      dplyr::filter(!is.na(q.ct),!is.na(q.lrt),!is.na(q.fisher),!is.na(q.btBinom),!is.na(q.projection))
+    q2 <- as.data.frame(q2)
     row.names(q2) <- q2[,1]
     q2[,-1]%>%
       as.matrix()%>%
       t()%>%
-      pheatmap(show_colnames = T, fontsize_col = 7, filename = "q_value_heatmap.png")
+      pheatmap(show_colnames = T, fontsize_col = 7, filename = "q_value_heatmap.pdf", display_numbers = T)
 
     result_BB <- subset(sig_betabinomial,q.btBinom<0.1)
     if(nrow(result_BB)>100){
@@ -951,7 +954,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     ggplot2::ggsave(PJ, file="PJ.pdf", width = 15)
 
     VennDiagram::venn.diagram(x=list(gene_projection=gene_projection,gene_betabinomial=gene_betabinomial,gene_fisher=gene_fisher,gene_lrt=gene_lrt,gene_ct=gene_ct),
-                 filename = "vennplot",
+                 filename = "vennplot.pdf",
                  fill =pal_npg()(5),
                  cat.col =pal_npg()(5),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
     #fill =c("cornflowerblue","green","yellow","darkorchid1","red")

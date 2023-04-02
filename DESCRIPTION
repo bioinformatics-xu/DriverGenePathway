@@ -23,7 +23,11 @@ Imports:
     stringr,
     readxl,
     VennDiagram,
-    ggrepel
+    ggrepel,
+    pheatmap,
+    tidyverse,
+    ggsci,
+    magrittr
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

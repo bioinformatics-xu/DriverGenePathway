@@ -2,8 +2,7 @@
 % Please edit documentation in R/DriverPathway.R
 \name{DriverPathway}
 \alias{DriverPathway}
-\title{Search driver pathway using de novo method
-This function searches driver pathway using de novo method based on mutual exclusivity and coverage}
+\title{Search driver pathway using a de novo method, AWRMP(https://www.frontiersin.org/articles/10.3389/fgene.2019.00233/full).}
 \usage{
 DriverPathway(
   mutation_data,
@@ -34,8 +33,7 @@ If these files cannot be detected, they will be downloaded from the MutSigCV web
 Output of DriverPathway is a list including the mutation matrix, identified driver gene set, and p-value.
 }
 \description{
-Search driver pathway using de novo method
-This function searches driver pathway using de novo method based on mutual exclusivity and coverage
+Search driver pathway using a de novo method, AWRMP(https://www.frontiersin.org/articles/10.3389/fgene.2019.00233/full).
 }
 \examples{
 data(SampleMutationMatrix)
