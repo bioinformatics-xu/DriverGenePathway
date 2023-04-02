@@ -334,7 +334,6 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
             else
               p = P1[,d1]
           }
-
           Sdeg[,d1+1,d2+1] = -log10(p)
         }
       }
@@ -382,7 +381,11 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
           cat(sprintf("g=%d",g))
           cat(sprintf("p=%d",p))
           flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
-          score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
+          if(!any(flag_finite)){
+            score_sample <- 10
+          }else{
+            score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
+          }
           cat(sprintf("maxscore=%f",score_sample))
         }
         score_obs = score_obs + score_sample
@@ -730,7 +733,11 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
         cat(sprintf("g=%d",g))
         cat(sprintf("p=%d",p))
         flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
-        score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
+        if(!any(flag_finite)){
+          score_sample <- 10
+        }else{
+          score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
+        }
         cat(sprintf("maxscore=%f",score_sample))
       }
       score_obs = score_obs + score_sample
