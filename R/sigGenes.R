@@ -20,6 +20,10 @@
 #' @importFrom ggsci pal_npg
 #' @importFrom pheatmap pheatmap
 #' @importFrom magrittr %>%
+#' @importFrom grDevices dev.off pdf
+#' @importFrom grid grid.draw
+#' @importFrom ggplot2 ggplot geom_point theme_minimal theme labs ggsave aes element_rect element_blank
+#' @importFrom ggrepel geom_text_repel
 #' @details This function searches the significant genes using different hypothesis test methods,
 #' including binomial distribution test, beta binomial distribution test, Fisher combined P-value test,
 #' likelihood ratio test and convolution test.
@@ -872,14 +876,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     }
     gene_betabinomial <- result_BB[,1]
     result_BB1$lgq.btBinom <- -log10(result_BB1$q.btBinom+0.00000001)
-    BB <- ggplot2::ggplot(result_BB1, ggplot2::aes(x=gene,y=lgq.btBinom))+
-      ggplot2::geom_point(ggplot2::aes(size=2*(lgq.btBinom^2)), color = "#00AFBB") +
-      ggrepel::geom_text_repel(ggplot2::aes(label = gene), size = 5)+
-      ggplot2::theme_minimal()+
-      ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
-      ggplot2::theme(axis.text.x = ggplot2::element_blank())+
-      ggplot2::labs(title="Plot of result genes tested by beta-binomial", x ="Genes", y = "-log(q.beta-binomial)")
-    ggplot2::ggsave(BB, file="BB.pdf", width = 15)
+    BB <- ggplot(result_BB1, aes(x=gene,y=lgq.btBinom))+
+      geom_point(aes(size=2*(lgq.btBinom^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 5)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by beta-binomial", x ="Genes", y = "-log(q.beta-binomial)")
+    ggsave(BB, filename="BB.pdf", width = 15)
 
     result_FCPT <- subset(sig_fisher,q.fisher<0.1)
     if(nrow(result_FCPT)>100){
@@ -890,14 +894,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     }
     gene_fisher <- result_FCPT[,1]
     result_FCPT1$lgq.fisher <- -log10(result_FCPT1$q.fisher+0.00000001)
-    FCPT <- ggplot2::ggplot(result_FCPT1, ggplot2::aes(x=gene,y=lgq.fisher))+
-      ggplot2::geom_point(ggplot2::aes(size=2*(lgq.fisher^2)), color = "#00AFBB") +
-      ggrepel::geom_text_repel(ggplot2::aes(label = gene), size = 5)+
-      ggplot2::theme_minimal()+
-      ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
-      ggplot2::theme(axis.text.x = ggplot2::element_blank())+
-      ggplot2::labs(title="Plot of result genes tested by fisher", x ="Genes", y = "-log(q.fisher)")
-    ggplot2::ggsave(FCPT, file="FCPT.pdf", width = 15)
+    FCPT <- ggplot(result_FCPT1, aes(x=gene,y=lgq.fisher))+
+      geom_point(aes(size=2*(lgq.fisher^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 5)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by fisher", x ="Genes", y = "-log(q.fisher)")
+    ggsave(FCPT, filename="FCPT.pdf", width = 15)
 
     result_LRT <- subset(sig_lrt,q.lrt<0.1)
     if(nrow(result_LRT)>100){
@@ -908,14 +912,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     }
     gene_lrt <- result_LRT[,1]
     result_LRT1$lgq.LRT <- -log10(result_LRT1$q.lrt+0.00000001)
-    LRT <- ggplot2::ggplot(result_LRT1, ggplot2::aes(x=gene,y=lgq.LRT))+
-      ggplot2::geom_point(ggplot2::aes(size=2*(lgq.LRT^2)), color = "#00AFBB") +
-      ggrepel::geom_text_repel(ggplot2::aes(label = gene), size = 5)+
-      ggplot2::theme_minimal()+
-      ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
-      ggplot2::theme(axis.text.x = ggplot2::element_blank())+
-      ggplot2::labs(title="Plot of result genes tested by lrt", x ="Genes", y = "-log(q.lrt)")
-    ggplot2::ggsave(LRT, file="LRT.pdf", width = 15)
+    LRT <- ggplot(result_LRT1, aes(x=gene,y=lgq.LRT))+
+      geom_point(aes(size=2*(lgq.LRT^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 5)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by lrt", x ="Genes", y = "-log(q.lrt)")
+    ggsave(LRT, filename="LRT.pdf", width = 15)
 
     result_CT <- subset(sig_ct,q.ct<0.1)
     if(nrow(result_CT)>100){
@@ -926,14 +930,14 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     }
     gene_ct <- result_CT[,1]
     result_CT1$lgq.CT <- -log10(result_CT1$q.ct+0.00000001)
-    CT <- ggplot2::ggplot(result_CT1,ggplot2::aes(x=gene,y=lgq.CT))+
-      ggplot2::geom_point(ggplot2::aes(size=2*(lgq.CT^2)), color = "#00AFBB") +
-      ggrepel::geom_text_repel(ggplot2::aes(label = gene), size = 5)+
-      ggplot2::theme_minimal()+
-      ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
-      ggplot2::theme(axis.text.x = ggplot2::element_blank())+
-      ggplot2::labs(title="Plot of result genes tested by ct", x ="Genes", y = "-log(q.ct)")
-    ggplot2::ggsave(CT, file="CT.pdf", width = 15)
+    CT <- ggplot(result_CT1,aes(x=gene,y=lgq.CT))+
+      geom_point(aes(size=2*(lgq.CT^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 5)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by ct", x ="Genes", y = "-log(q.ct)")
+    ggsave(CT, filename="CT.pdf", width = 15)
 
     result_PJ <- subset(sig_projection,q.projection<0.1)
     if(nrow(result_PJ)>100){
@@ -944,19 +948,22 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     }
     gene_projection <- result_PJ[,1]
     result_PJ1$lgq.PJ <- -log10(result_PJ1$q.projection+0.00000001)
-    PJ <- ggplot2::ggplot(result_PJ1,ggplot2::aes(x=gene,y=lgq.PJ))+
-      ggplot2::geom_point(ggplot2::aes(size=2*(lgq.PJ^2)), color = "#00AFBB") +
-      ggrepel::geom_text_repel(ggplot2::aes(label = gene), size = 5)+
-      ggplot2::theme_minimal()+
-      ggplot2::theme(legend.background = ggplot2::element_rect(fill="lightblue"))+
-      ggplot2::theme(axis.text.x = ggplot2::element_blank())+
-      ggplot2::labs(title="Plot of result genes tested by 2D projection", x ="Genes", y = "-log(q.projection)")
-    ggplot2::ggsave(PJ, file="PJ.pdf", width = 15)
+    PJ <- ggplot(result_PJ1,aes(x=gene,y=lgq.PJ))+
+      geom_point(aes(size=2*(lgq.PJ^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 5)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by 2D projection", x ="Genes", y = "-log(q.projection)")
+    ggsave(PJ, filename="PJ.pdf", width = 15)
 
-    VennDiagram::venn.diagram(x=list(gene_projection=gene_projection,gene_betabinomial=gene_betabinomial,gene_fisher=gene_fisher,gene_lrt=gene_lrt,gene_ct=gene_ct),
+    vennplot <- VennDiagram::venn.diagram(x=list(gene_projection=gene_projection,gene_betabinomial=gene_betabinomial,gene_fisher=gene_fisher,gene_lrt=gene_lrt,gene_ct=gene_ct),
                  filename = "vennplot.pdf",
                  fill =pal_npg()(5),
                  cat.col =pal_npg()(5),cat.cex = 1,cat.pos = 0, cat.dist = 0.07,cat.fontfamily = "serif")
+    pdf("vennplot.pdf")
+    grid.draw(vennplot)
+    dev.off()
     #fill =c("cornflowerblue","green","yellow","darkorchid1","red")
     #cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black")
     setwd("..")
