@@ -885,7 +885,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_BB1$lgq.btBinom <- -log10(result_BB1$q.btBinom+0.00000001)
     BB <- ggplot(result_BB1, aes(x=gene,y=lgq.btBinom))+
       geom_point(aes(size=2*(lgq.btBinom^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 4)+
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
@@ -903,7 +903,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_FCPT1$lgq.fisher <- -log10(result_FCPT1$q.fisher+0.00000001)
     FCPT <- ggplot(result_FCPT1, aes(x=gene,y=lgq.fisher))+
       geom_point(aes(size=2*(lgq.fisher^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 4)+
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
@@ -921,7 +921,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_LRT1$lgq.LRT <- -log10(result_LRT1$q.lrt+0.00000001)
     LRT <- ggplot(result_LRT1, aes(x=gene,y=lgq.LRT))+
       geom_point(aes(size=2*(lgq.LRT^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 4)+
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
@@ -939,7 +939,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_CT1$lgq.CT <- -log10(result_CT1$q.ct+0.00000001)
     CT <- ggplot(result_CT1,aes(x=gene,y=lgq.CT))+
       geom_point(aes(size=2*(lgq.CT^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 4)+
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
@@ -957,7 +957,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     result_PJ1$lgq.PJ <- -log10(result_PJ1$q.projection+0.00000001)
     PJ <- ggplot(result_PJ1,aes(x=gene,y=lgq.PJ))+
       geom_point(aes(size=2*(lgq.PJ^2)), color = "#00AFBB") +
-      geom_text_repel(aes(label = gene), size = 4)+
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
       theme_minimal()+
       theme(legend.background = element_rect(fill="lightblue"))+
       theme(axis.text.x = element_blank())+
