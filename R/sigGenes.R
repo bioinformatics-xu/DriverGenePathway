@@ -85,13 +85,32 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       sig_betabinomial$p.btBinom[i] <- 1-fun_hc(n_nonsilent_g[i],
                                                 N_nonsilent_g[i],
                                                 x_g[i],X_g[i])
-
     }
     sig_betabinomial <- sig_betabinomial[which(!is.na(sig_betabinomial$p.btBinom)),]
     sig_betabinomial$q.btBinom <- stats::p.adjust(sig_betabinomial$p.btBinom,method="BH",nrow(G))
     sig_betabinomial <- sig_betabinomial[order(sig_betabinomial$q.btBinom,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_betabinomial,file = output_file,row.names = F)
+
+    # plot bubble chart
+    result_BB <- subset(sig_betabinomial,q.btBinom<sigThreshold)
+    if(nrow(result_BB)>100){
+      result_BB1 <- result_BB[1:100,]
+    }
+    else{
+      result_BB1 <- result_BB
+    }
+    gene_betabinomial <- result_BB[,1]
+    result_BB1$lgq.btBinom <- -log10(result_BB1$q.btBinom+0.00000001)
+    BB <- ggplot(result_BB1, aes(x=gene,y=lgq.btBinom))+
+      geom_point(aes(size=2*(lgq.btBinom^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by beta-binomial", x ="Genes", y = "-log(q.beta-binomial)")
+    ggsave(BB, filename="BB.pdf", width = 15)
+
     setwd("..")
     return(sig_betabinomial)
   }
@@ -124,6 +143,26 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     sig_fisher <- sig_fisher[order(sig_fisher$q.fisher,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_fisher,file = output_file,row.names = F)
+
+    # plot bubble chart
+    result_FCPT <- subset(sig_fisher,q.fisher<sigThreshold)
+    if(nrow(result_FCPT)>100){
+      result_FCPT1 <- result_FCPT[1:100,]
+    }
+    else{
+      result_FCPT1 <- result_FCPT
+    }
+    gene_fisher <- result_FCPT[,1]
+    result_FCPT1$lgq.fisher <- -log10(result_FCPT1$q.fisher+0.00000001)
+    FCPT <- ggplot(result_FCPT1, aes(x=gene,y=lgq.fisher))+
+      geom_point(aes(size=2*(lgq.fisher^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by fisher", x ="Genes", y = "-log(q.fisher)")
+    ggsave(FCPT, filename="FCPT.pdf", width = 15)
+
     setwd("..")
     return(sig_fisher)
   } # end of if(p_class == "fisher")
@@ -163,6 +202,26 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     sig_lrt <- sig_lrt[order(sig_lrt$q.lrt,decreasing = F),]
     output_file <-  paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_lrt,file = output_file,row.names = F)
+
+    # plot bubble chart
+    result_LRT <- subset(sig_lrt,q.lrt<sigThreshold)
+    if(nrow(result_LRT)>100){
+      result_LRT1 <- result_LRT[1:100,]
+    }
+    else{
+      result_LRT1 <- result_LRT
+    }
+    gene_lrt <- result_LRT[,1]
+    result_LRT1$lgq.LRT <- -log10(result_LRT1$q.lrt+0.00000001)
+    LRT <- ggplot(result_LRT1, aes(x=gene,y=lgq.LRT))+
+      geom_point(aes(size=2*(lgq.LRT^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by lrt", x ="Genes", y = "-log(q.lrt)")
+    ggsave(LRT, filename="LRT.pdf", width = 15)
+
     setwd("..")
     return(sig_lrt)
   }
@@ -245,6 +304,26 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     sig_ct <- sig_ct[order(sig_ct$q.ct,decreasing = F),]
     output_file <- paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_ct,file = output_file,row.names = F)
+
+    # plot bubble chart
+    result_CT <- subset(sig_ct,q.ct<sigThreshold)
+    if(nrow(result_CT)>100){
+      result_CT1 <- result_CT[1:100,]
+    }
+    else{
+      result_CT1 <- result_CT
+    }
+    gene_ct <- result_CT[,1]
+    result_CT1$lgq.CT <- -log10(result_CT1$q.ct+0.00000001)
+    CT <- ggplot(result_CT1,aes(x=gene,y=lgq.CT))+
+      geom_point(aes(size=2*(lgq.CT^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by ct", x ="Genes", y = "-log(q.ct)")
+    ggsave(CT, filename="CT.pdf", width = 15)
+
     setwd("..")
     return(sig_ct)
   }
@@ -433,6 +512,26 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     # utils::write.table(sig_projection,file = output_file,quote = F,sep = "\t",row.names = F)
     output_file <- paste(output_filestem,"_",p_class,"_sigGenes.csv",sep = "")
     utils::write.csv(sig_projection,file = output_file,row.names = F)
+
+    # plot bubble chart
+    result_PJ <- subset(sig_projection,q.projection<sigThreshold)
+    if(nrow(result_PJ)>100){
+      result_PJ1 <- result_PJ[1:100,]
+    }
+    else{
+      result_PJ1 <- result_PJ
+    }
+    gene_projection <- result_PJ[,1]
+    result_PJ1$lgq.PJ <- -log10(result_PJ1$q.projection+0.00000001)
+    PJ <- ggplot(result_PJ1,aes(x=gene,y=lgq.PJ))+
+      geom_point(aes(size=2*(lgq.PJ^2)), color = "#00AFBB") +
+      geom_text_repel(aes(label = gene), size = 4, max.overlaps = 10)+
+      theme_minimal()+
+      theme(legend.background = element_rect(fill="lightblue"))+
+      theme(axis.text.x = element_blank())+
+      labs(title="Plot of result genes tested by 2D projection", x ="Genes", y = "-log(q.projection)")
+    ggsave(PJ, filename="PJ.pdf", width = 15)
+
     setwd("..")
     return(sig_projection)
   }
@@ -857,11 +956,6 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
     utils::write.csv(q_result,file = "q_values.csv",quote = F,row.names = F)
 
-    # create plots
-    if(!dir.exists("sigGenes_plots")){
-      dir.create("sigGenes_plots")
-    }
-    setwd("sigGenes_plots")
     gene = lgq.btBinom = lgq.fisher = lgq.LRT = lgq.CT = lgq.PJ = gene = NULL
 
     # heatmap for q values
@@ -973,7 +1067,6 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     dev.off()
     #fill =c("cornflowerblue","green","yellow","darkorchid1","red")
     #cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black")
-    setwd("..")
     setwd("..")
     return(sigGenes_final)
   }  # end of if(p_class == "all")
