@@ -12,6 +12,7 @@
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
 {
+  message("Building BMR")
   gene_idx = NULL
   options(digits=15)
   M<-preOutM
@@ -19,8 +20,6 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
   V<-preOutV
 
   G <- data.frame(gene=as.character(unique(C$gene)))
-
-  message("Loading covariate data")
   #V <- fread(covariate_file,header = TRUE,sep = '\t')
   f <- colnames(V)
   cvnames <- f[2:ncol(V)]
@@ -37,9 +36,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
   #remove any genes that we don't have coverage for
   bad_gene  <- setdiff(M$gene,C$gene)
   if (length(bad_gene)!=0){
-    message("NOTE: %d/%d gene names could not be mapped to coverage
-                    information. Excluding them.\n",length(bad_gene),
-                length(unique(M$gene)))
+    #message(sprintf("%d/%d gene names could not be mapped to coverage information. Excluding them.",length(bad_gene),length(unique(M$gene))))
     flag_remove <- which(!(M$gene %in% bad_gene))
     M <- M[flag_remove,]
   }
@@ -74,12 +71,12 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
   name_before <- M$patient
   M$patient <- gsub("-Tumor$","",M$patient)
   if (any(name_before != M$patient)){
-    message("Trimming '-Tumor' from patient names.")
+    #message("Trimming '-Tumor' from patient names.")
   }
   name_before <- M$patient
   M$patient <- gsub("-","_",M$patient)
   if (any(name_before != M$patient)){
-    message("Converting '-' to '_' in patient names.")
+    #message("Converting '-' to '_' in patient names.")
   }
 
   patient <- stringr::str_sort(unique(M$patient),locale = "C")
@@ -216,7 +213,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
                                                     tot_rate_silent));
   if (abs_log2_difference_nonsilent_silent>
       max_abs_log2_difference_nonsilent_silent)
-    warning('silent and nonsilent rates are too different.')
+    message('silent and nonsilent rates are too different.')
 
   ## see if noncoding is OK: if not, give warning and zero it all out
   ok = FALSE
@@ -230,7 +227,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
             tot_rate_noncoding>max_rate_noncoding)
         warning('noncoding mutation rate out of range')
         else
-        { abs_log2_difference_noncoding_coding <-
+        {abs_log2_difference_noncoding_coding <-
           abs(log2(tot_rate_noncoding/tot_rate_coding));
         if (abs_log2_difference_noncoding_coding >
             max_abs_log2_difference_noncoding_coding)
@@ -243,7 +240,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
   }
 
   if (!ok){
-    message('Zeroing out all noncoding mutations and coverage for the rest of the calculation.');
+    message('Zeroing out all noncoding mutations and coverage for the rest of the calculation');
     n_noncoding[,,]= 0;
     N_noncoding[,,] = 0;
   }
@@ -265,7 +262,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
   G$n_noncoding <- apply(n_noncoding[,ncat+1,],1,sum)
 
   # PROCESS COVARIATES
-  message("Processing covariates")
+  #message("Processing covariates")
 
   V <- matrix(data = NaN,nrow = ng,ncol = nv)
   for (i in 1:nv) {
@@ -366,7 +363,7 @@ BMR <- function(preOutM, preOutC, preOutV, bmr=1.2e-6)
     x_gcp[,,pi] <- x_gcp[,,pi]*(f_p[pi]*f_Np[pi])
     X_gcp[,,pi] <- X_gcp[,,pi]*f_Np[pi]
   }
-  message("Building background mutation rate finished")
+  message("Building BMR finished")
   return(list(G=G,N_silent=N_silent,n_silent=n_silent,
               N_nonsilent=N_nonsilent,n_nonsilent=n_nonsilent,
               N_noncoding=N_noncoding,n_noncoding=n_noncoding,

@@ -152,7 +152,7 @@ coverage_patient_names <- f[4:ncol(C)]
 # take the effect of M, by dictionary.Variant_Classification
 # and M.Variant_Classification
 
-cat("Preprocessing mutation data ... \n")
+message("Preprocessing mutation data")
 if (("is_coding" %in% colnames(M)) || ("is_silent" %in% colnames(M))){
   # cat("NOTE: This version now ignores 'is_coding' and 'is_silent' \n")
   # cat("Requires Variant_Classification/type column and
@@ -185,9 +185,9 @@ if ("effect" %in% colnames(M)){
   M$effect <- dict$effect[flag_num]
   bad <- which(M$effect == "unknown")
   if(length(bad)>0){
-    warning("%d/%d mutations could not be mapped to
+    message(sprintf("%d/%d mutations could not be mapped to
                     effect using mutation_type_dictionary_file",
-             length(bad),length(M$effect))
+             length(bad),length(M$effect)))
     message("They will be removed from the analysis.")
     M <- M[-bad]
   }
@@ -278,9 +278,8 @@ if(!("chr" %in% colnames(M)) || !("start" %in% colnames(M)) ||
   M$start <- as.numeric(M$start)
   bad <- which(is.nan(M$start))
   if(length(bad) > 0){
-    warning("%d/%d mutations had non-numeric Start_position.
-                  Excluding them from analysis.",
-            length(bad),length(M$start))
+    message(sprintf("%d/%d mutations had non-numeric Start_position.
+                  Excluding them from analysis.", length(bad),length(M$start)))
     M <- M[-bad]
   }
   if(nrow(M) == 0){
@@ -304,9 +303,8 @@ if(!("chr" %in% colnames(M)) || !("start" %in% colnames(M)) ||
     }else{
       bad <- which(!chr_file_available[M$chr_idx])
       if(length(bad) > 0){
-        warning("%d/%d mutations are on chromosomes not found in
-                      chr_files_directory Excluding them from analysis. \n",
-                length(bad),nrow(M))
+        message(sprintf("%d/%d mutations are on chromosomes not found in
+                      chr_files_directory Excluding them from analysis.", length(bad),nrow(M)))
         M <- M[-bad]
       }
       if(nrow(M) == 0){
@@ -328,8 +326,7 @@ if(is.nan(categ_flag)){
   }else if(categs_already_present){
     method <- 1
   }else{
-    message("unable to perform category discovery, because %s. ",
-            reason)
+    message(sprintf("unable to perform category discovery, because %s.", reason))
     method<- 2
   }
 }else if(categ_flag == 0){
@@ -342,7 +339,7 @@ if(is.nan(categ_flag)){
   method <-2
 }else if(categ_flag > 1){
   if(categ_flag>6){
-    message("NOTE: maximum categories that can be discovered is 6. \n")
+    message("maximum categories that can be discovered is 6.")
     categ_flag <- 6
   }
   if(!can_do_category_discovery){
@@ -352,7 +349,7 @@ if(is.nan(categ_flag)){
     ncategs <- categ_flag
   }
   if(ncategs > 4){
-    message("NOTE: It may take dozens of hours to finish the process when the number of categories is set larger than 4.")
+    message("It may take dozens of hours to finish the process when the number of categories is set larger than 4.")
   }
 }
 
@@ -394,7 +391,7 @@ if(method==1){
   M$categ[flag_nonull] <- K$name[1]
 
   # collapse coverage
-  cat(sprintf("Preprocessing Coverage data... \n"))
+  #message("Preprocessing Coverage data")
   temp <- unique(C$categ)
   C$categ_idx <- match(C$categ,temp)
 
@@ -468,13 +465,13 @@ if(method==1){
 
   # STEPE 2
   #MUTATIONS：get context65 by looking up from reference genome
-  cat(sprintf("Looking up trinucleotide contexts from chr files...\n"))
+  message("Looking up trinucleotide contexts from chr files")
 
   #f2 <- paste("chr",uchr,".txt",sep = "")
   f2 <- paste(chr_files_directory,f2,sep = "/")
   triplet <- data.frame(name = rep(1,each=nrow(M)))
   for (ci in 1:length(uchr)){
-    cat(sprintf("%d/%d ", ci,length(uchr)))
+    #cat(sprintf("%d/%d ", ci,length(uchr)))
     midx <- which(M$chr_idx == ci)
     chrfile <- f2[ci]
     d <- file.info(chrfile)
@@ -500,7 +497,7 @@ if(method==1){
     if(matchfrac < 0.7){
       adj <- "probable"
     }
-    warning("%s build mismatch between mutation_file and chr_files", adj)
+    message(sprintf("%s build mismatch between mutation_file and chr_files", adj))
   }
   M$yname <- paste(substr(M$triplet,2,2),"in",substr(M$triplet,1,1),sep = " ")
   M$yname <- paste(M$yname,substr(M$triplet,3,3),sep = "_")
@@ -549,7 +546,7 @@ if(method==1){
 
   #STEP4
   #assign mutation categories
-  message("Assigning mutation categories.")
+  message("Assigning mutation categories")
   M$categ <- rep("---",times=nrow(M))
   for (i in 1:nrow(X)) {
     idx <- which((M$context65==X$context65[i]) &
@@ -576,7 +573,7 @@ if(method==1){
 
   # STEP5
   # collapse coverage
-  message("Collapsing coverages...\n")
+  message("Collapsing coverages")
   C <- dplyr::arrange(C,gene,effect,categ_idx)
   #order as gene, effect, categ_idx, if decrease, then desc(gene)
 
