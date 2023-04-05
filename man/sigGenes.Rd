@@ -15,7 +15,7 @@ sigGenes(
 \item{BMR_out}{Data output by the BMR function.}
 
 \item{p_class}{"BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test;
-"LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
+"LRT" represents likelihood ratio test; "CT" represents convolution test; "PJ" represents projection test
 method; "allTest" represents the mutual results of all methods.}
 
 \item{output_filestem}{Unified prefix of output data, could be modified as well}

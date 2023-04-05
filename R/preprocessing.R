@@ -17,7 +17,7 @@
 #' @param preprocessedOutput Whether output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.
 #' @importFrom utils download.file unzip
 #' @importFrom stats p.adjust
-#' @importFrom httr GET http_status content
+#' @importFrom httr GET http_status content timeout progress
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
