@@ -33,6 +33,6 @@ DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=N
     sigGenes <- sigGenes(BMR_out, p_class,sigThreshold, output_filestem=output_filestem)
     return(sigGenes)
   }else{
-    cat("Error:invalid input mutation data")
+    stop("Invalid input mutation data")
   }
 }

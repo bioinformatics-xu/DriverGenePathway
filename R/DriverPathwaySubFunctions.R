@@ -129,7 +129,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     return(mutation_matrix)
   }else if(all(c("Hugo_Symbol", "Tumor_Sample_Barcode","Variant_Classification") %in% colnames(mutation_data))){
     # The mutation data is MAF file, then preprocess it to 0/1 mutation matrix
-    cat("The input mutation data is MAF file, preprocess it to 0/1 mutation matrix \n")
+    message("The input mutation data is MAF file, preprocess it to 0/1 mutation matrix")
     current.files <- list.files()
     if(any(grepl("coverage.txt",current.files))){
       C <- as.data.frame(data.table::fread(file = current.files[grepl("coverage.txt",current.files)]))
@@ -162,7 +162,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
 
     G <- data.frame(gene=as.character(unique(C$gene)))
 
-    cat("Loading covariate data... \n")
+    message("Loading covariate data")
     #V <- fread(covariate_file,header = TRUE,sep = '\t')
     f <- colnames(V)
     cvnames <- f[2:ncol(V)]
@@ -179,8 +179,8 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     #remove any genes that we don't have coverage for
     bad_gene  <- setdiff(M$gene,C$gene)
     if (length(bad_gene)!=0){
-      cat(sprintf("NOTE: %d/%d gene names could not be mapped to coverage information. Excluding them. \n",length(bad_gene),
-                  length(unique(M$gene))))
+      #message("%d/%d gene names could not be mapped to coverage information. Excluding them. \n",length(bad_gene),
+      #            length(unique(M$gene)))
       flag_remove <- which(!(M$gene %in% bad_gene))
       M <- M[flag_remove,]
     }
@@ -215,12 +215,12 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     name_before <- M$patient
     M$patient <- gsub("-Tumor$","",M$patient)
     if (any(name_before != M$patient)){
-      cat("NOTE: Trimming '-Tumor' from patient names. \n")
+      #message("Trimming '-Tumor' from patient names.")
     }
     name_before <- M$patient
     M$patient <- gsub("-","_",M$patient)
     if (any(name_before != M$patient)){
-      cat("NOTE: Converting '-' to '_' in patient names. \n")
+      #message("Converting '-' to '_' in patient names.")
     }
 
     patient <- stringr::str_sort(unique(M$patient),locale = "C")
@@ -229,7 +229,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     M$patient_idx <- match(M$patient,patient)
     np <- nrow(pat)
     if (np < 2){
-      stop("DriverPathway is not applicable to single patients. \n")
+      stop("DriverPathway is not applicable to single patients.")
     }
 
     #is generic coverage data given?
@@ -255,7 +255,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     }
 
     #BUILD n and N tables
-    cat("Building n and N tables...\n")
+    message("Building n and N tables...\n")
 
     gene <- sort(as.character(unique(C$gene)))
     categ_name <- as.character(K$name)
@@ -358,25 +358,25 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
                                                       tot_rate_silent));
     if (abs_log2_difference_nonsilent_silent>
         max_abs_log2_difference_nonsilent_silent)
-      print('Warning: silent and nonsilent rates are too different.')
+      warning('silent and nonsilent rates are too different')
 
     ## see if noncoding is OK: if not, give warning and zero it all out
     ok = FALSE
     {if (tot_n_noncoding==0)
-      print('NOTE:  no noncoding mutations.')
+      message('no noncoding mutations.')
       else
       { if (tot_n_noncoding<min_tot_n_noncoding)
-        print('WARNING:  not enough noncoding mutations to analyze')
+        warning('not enough noncoding mutations to analyze')
         else
         { if (tot_rate_noncoding<min_rate_noncoding ||
               tot_rate_noncoding>max_rate_noncoding)
-          print('WARNING:  noncoding mutation rate out of range')
+          warning('noncoding mutation rate out of range')
           else
           { abs_log2_difference_noncoding_coding <-
             abs(log2(tot_rate_noncoding/tot_rate_coding));
           if (abs_log2_difference_noncoding_coding >
               max_abs_log2_difference_noncoding_coding)
-            print("WARNING:  coding and noncoding rates are too different")
+            warning("coding and noncoding rates are too different")
           else
             ok = TRUE
           }
@@ -385,7 +385,7 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     }
 
     if (!ok){
-      cat('Zeroing out all noncoding mutations and coverage for the rest of the calculation. \n');
+      message('Zeroing out all noncoding mutations and coverage for the rest of the calculation.');
       n_noncoding[,,]= 0;
       N_noncoding[,,] = 0;
     }
@@ -439,9 +439,9 @@ preprocessing_mutation_data <- function(mutation_data,bmr=1.2e-6){
     }
     select.M <- M[M$gene %in% analysis_gene,]
     mutation_matrix <- generate_mutation_matrix(select.M, analysis_gene)
-    cat("Return preprocessed mutation matrix. \n")
+    message("Return preprocessed mutation matrix")
     return(mutation_matrix)
   }else{
-    stop("Input data of DriverPathway function should be 0/1 mutation matrix or MAF file. \n")
+    stop("Input data of DriverPathway function should be 0/1 mutation matrix or MAF file.")
   }
 }

@@ -117,6 +117,7 @@ DriverPathway <- function(mutation_data,
 
   p_value <- mulExclusive_significance(mutation_matrix,driver_geneset,permut_time = permut_time)
   G <- list(mutation_matrix=mutation_matrix,driver_geneset=driver_geneset,p_value=p_value)
+  message("Driver pathway identification finished")
   #utils::write.table(G,file = outfile,quote = F,sep = "\t",row.names = F)
   return(G)
 }

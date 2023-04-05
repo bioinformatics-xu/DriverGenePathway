@@ -17,6 +17,7 @@
 #' @param preprocessedOutput Whether output the preprocessed files, if preprocessedOutput is TRUE, then output preprocessed mutation, coverage, and covariate files; otherwise not.
 #' @importFrom utils download.file unzip
 #' @importFrom stats p.adjust
+#' @importFrom httr GET http_status content
 #' @return The output is a list includes the preprocessed mutation and coverage data, which are the inputs of BMR function.
 preprocessing <- function(M,C,dict,V,
                           chr_files_directory,categ_flag=NaN,
@@ -25,33 +26,66 @@ preprocessing <- function(M,C,dict,V,
 
 if(is.null(C)){
   # download and read coverage data
-  cat("Download coverage file")
-  download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/exome_full192.coverage.zip",
-                destfile = "exome_full192.coverage.txt.zip", method = "auto", timeout = 10000, quiet = FALSE)
-  unzip("exome_full192.coverage.txt.zip", exdir = ".")
-  file.remove("exome_full192.coverage.txt.zip")
+  message("Download coverage file")
+
+  url = "http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/exome_full192.coverage.zip"
+  response <- GET(url, timeout(10000), progress())
+  if(http_status(response)$category == "Success"){
+    content <- content(response, as = "raw")
+    filepath <- file.path(getwd(), basename(url))
+    writeBin(content,filepath)
+  }else{
+    message <- paste("Request failed with status code", http_status(response)$status_code)
+    stop(message)
+  }
+  unzip("exome_full192.coverage.zip", exdir = ".")
+  file.remove("exome_full192.coverage.zip")
   C <- as.data.frame(data.table::fread(file = "exome_full192.coverage.txt"))
 }
 
 if(is.null(dict)){
-  cat("Download dictionary file")
-  download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/mutation_type_dictionary_file.txt",
-                destfile = "mutation_type_dictionary_file.txt", method = "auto", timeout = 10000, quiet = FALSE)
+  message("Download dictionary file")
+  url <- "http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/mutation_type_dictionary_file.txt"
+  response <- GET(url, timeout(10000), progress(), encoding = "UTF-8")
 
+  if (http_status(response)$category == "Success") {
+    content <- content(response, as = "text", encoding = "UTF-8")
+    write(content, file.path(getwd(), basename(url)))
+  } else {
+    message <- paste("Request failed with status code", http_status(response)$status_code)
+    stop(message)
+  }
   dict <- as.data.frame(data.table::fread(file = "mutation_type_dictionary_file.txt"))
 }
 
 if(is.null(V)){
-  cat("Download covariate file")
-  download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/gene.covariates.txt",
-                destfile = "gene.covariates.txt", method = "auto", timeout = 10000, quiet = FALSE)
+  message("Download covariate file")
+  url <- "http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/gene.covariates.txt"
+  response <- GET(url, timeout(10000), progress(), encoding = "UTF-8")
+
+  if (http_status(response)$category == "Success") {
+    content <- content(response, as = "text", encoding = "UTF-8")
+    write(content, file.path(getwd(), basename(url)))
+  } else {
+    message <- paste("Request failed with status code", http_status(response)$status_code)
+    stop(message)
+  }
   V <- as.data.frame(data.table::fread(file = "gene.covariates.txt"))
 }
 
 if(is.null(chr_files_directory)){
-  cat("Download chromosome files (about 900M), which will take some time")
-  download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/chr_files_hg19.zip",
-                destfile = "chr_files_hg19.zip", method = "auto", timeout = 10000, quiet = FALSE)
+  message("Download chromosome files (about 900M), which will take some time")
+
+  url = "http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/chr_files_hg19.zip"
+  response <- GET(url, timeout(10000), progress())
+  if(http_status(response)$category == "Success"){
+    content <- content(response, as = "raw")
+    filepath <- file.path(getwd(), basename(url))
+    writeBin(content,filepath)
+  }else{
+    message <- paste("Request failed with status code", http_status(response)$status_code)
+    stop(message)
+  }
   unzip("chr_files_hg19.zip", exdir = ".")
   file.remove("chr_files_hg19.zip")
   chr_files_directory = "chr_files_hg19"
@@ -151,11 +185,14 @@ if ("effect" %in% colnames(M)){
   M$effect <- dict$effect[flag_num]
   bad <- which(M$effect == "unknown")
   if(length(bad)>0){
-    cat(sprintf("WARNING: %d/%d mutations could not be mapped to
-                    effect using mutation_type_dictionary_file: \n",
-                length(bad),length(M$effect)))
-    #table(bad_variant <- M$Variant_Classification[bad])
-    cat("They will be removed from the analysis. \n")
+    warning("%d/%d mutations could not be mapped to
+                    effect using mutation_type_dictionary_file",
+             length(bad),length(M$effect)
+    #cat(sprintf("WARNING: %d/%d mutations could not be mapped to
+    #                effect using mutation_type_dictionary_file: \n",
+    #            length(bad),length(M$effect)))
+
+    message("They will be removed from the analysis.")
     M <- M[-bad]
   }
   if(nrow(M) == 0){
@@ -245,9 +282,9 @@ if(!("chr" %in% colnames(M)) || !("start" %in% colnames(M)) ||
   M$start <- as.numeric(M$start)
   bad <- which(is.nan(M$start))
   if(length(bad) > 0){
-    cat(sprintf("WARNING: %d/%d mutations had non-numeric Start_position.
-                  Excluding them from analysis. \n",
-                length(bad),length(M$start)))
+    warning("%d/%d mutations had non-numeric Start_position.
+                  Excluding them from analysis.",
+            length(bad),length(M$start))
     M <- M[-bad]
   }
   if(nrow(M) == 0){
@@ -271,9 +308,9 @@ if(!("chr" %in% colnames(M)) || !("start" %in% colnames(M)) ||
     }else{
       bad <- which(!chr_file_available[M$chr_idx])
       if(length(bad) > 0){
-        cat(sprintf("WARNING: %d/%d mutations are on chromosomes not found in
+        warning("%d/%d mutations are on chromosomes not found in
                       chr_files_directory Excluding them from analysis. \n",
-                    length(bad),nrow(M)))
+                length(bad),nrow(M))
         M <- M[-bad]
       }
       if(nrow(M) == 0){
@@ -295,8 +332,8 @@ if(is.nan(categ_flag)){
   }else if(categs_already_present){
     method <- 1
   }else{
-    cat(sprintf("NOTE: unable to perform category discovery, because %s. ",
-                reason))
+    message("unable to perform category discovery, because %s. ",
+            reason)
     method<- 2
   }
 }else if(categ_flag == 0){
@@ -309,7 +346,7 @@ if(is.nan(categ_flag)){
   method <-2
 }else if(categ_flag > 1){
   if(categ_flag>6){
-    cat("NOTE: maximum categories that can be discovered is 6. \n")
+    message("NOTE: maximum categories that can be discovered is 6. \n")
     categ_flag <- 6
   }
   if(!can_do_category_discovery){
@@ -319,7 +356,7 @@ if(is.nan(categ_flag)){
     ncategs <- categ_flag
   }
   if(ncategs > 4){
-    cat("NOTE: It may take dozens of hours to finish the process when the number of categories is set larger than 4.")
+    message("NOTE: It may take dozens of hours to finish the process when the number of categories is set larger than 4.")
   }
 }
 
@@ -390,7 +427,7 @@ if(method==1){
   C <- C2
   remove(C2)
 }else if(method == 3){
-  cat(sprintf("Generating mutation categories...\n"))
+  message("Generating mutation categories.")
   C_coverage <- C[,4:ncol(C)]
   if(length(dim(C_coverage)) == 0){
     C$totcov <- C_coverage
@@ -467,7 +504,7 @@ if(method==1){
     if(matchfrac < 0.7){
       adj <- "probable"
     }
-    cat(sprintf("WARNING: %s build mismatch between mutation_file and chr_files", adj))
+    warning("%s build mismatch between mutation_file and chr_files", adj)
   }
   M$yname <- paste(substr(M$triplet,2,2),"in",substr(M$triplet,1,1),sep = " ")
   M$yname <- paste(M$yname,substr(M$triplet,3,3),sep = "_")
@@ -516,7 +553,7 @@ if(method==1){
 
   #STEP4
   #assign mutation categories
-  cat(sprintf("Assigning mutation categories...\n"))
+  message("Assigning mutation categories.")
   M$categ <- rep("---",times=nrow(M))
   for (i in 1:nrow(X)) {
     idx <- which((M$context65==X$context65[i]) &
@@ -543,7 +580,7 @@ if(method==1){
 
   # STEP5
   # collapse coverage
-  cat(sprintf("Collapsing coverages...\n"))
+  message("Collapsing coverages...\n")
   C <- dplyr::arrange(C,gene,effect,categ_idx)
   #order as gene, effect, categ_idx, if decrease, then desc(gene)
 
@@ -619,7 +656,7 @@ if(method==3){
     setwd("..")
   }
 }
-cat(sprintf("Preprocessing finished. \n"))
+message("Preprocessing finished")
 
 return(list(M=M,C=C,V=V))
 

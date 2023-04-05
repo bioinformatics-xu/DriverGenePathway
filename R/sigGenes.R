@@ -75,7 +75,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   }
 
   if(p_class == "BB"){
-
+    message("Beta binomial hypothesis test will be performed")
     sig_betabinomial <- as.data.frame(matrix(numeric(0),nrow = length(x_g),ncol = 3))
     colnames(sig_betabinomial) <- c("gene","p.btBinom","q.btBinom")
     sig_betabinomial$gene <- G$gene
@@ -116,8 +116,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   }
 
   if(p_class == "FCPT"){
-
     # Fisher combined binomial p-value
+    message("Fisher combined p-value test will be performed")
     sig_fisher <- as.data.frame(matrix(data = NA,nrow = length(x_g),ncol = 3))
     colnames(sig_fisher) <- c("gene","p.fisher","q.fisher")
     sig_fisher$gene <- G$gene
@@ -168,12 +168,13 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   } # end of if(p_class == "fisher")
 
   if(p_class == "LRT"){
-
+    # Likelihood ratio test
+    message("Likelihood ratio test will be performed")
     sig_lrt <- as.data.frame(matrix(data = NA,nrow = length(x_g),ncol = 3))
     colnames(sig_lrt) <- c("gene","p.lrt","q.lrt")
     sig_lrt$gene <- G$gene
     sig_lrt$p.lrt <- NA
-    # Likelihood ratio test
+
     LRT_lh0 <- as.data.frame(matrix(data = NA,nrow = length(x_g),ncol = cat_num))
     LRT_lh1 <- as.data.frame(matrix(data = NA,nrow = length(x_g),ncol = cat_num))
 
@@ -227,8 +228,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   }
 
   if(p_class == "CT"){
-
     # Convolution test
+    message("Convolution test will be performed")
     sig_ct <- as.data.frame(matrix(data = NA,nrow = nrow(G),ncol = 3))
     colnames(sig_ct) <- c("gene","p.ct","q.ct")
     sig_ct$gene <- G$gene
@@ -330,7 +331,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
 
   if(p_class == "PJ"){
     #options(digits=15)
-
+    message("Projection hypothesis test will be performed")
     G=BMR_out$G
     N_nonsilent=BMR_out$N_nonsilent
     n_nonsilent=BMR_out$n_nonsilent
@@ -341,7 +342,6 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     ######### 2D projection to calculate p value and q ##########
 
     #PROJECTION
-    cat("Calculating p.value using 2D Projection method...")
     null_score_boost = 3
     min_effect_size =1.25
     convolution_numbins =1000
@@ -457,15 +457,15 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
         }
         score_sample = Sdeg[p,degree[p,1]+1,degree[p,2]+1]
         if(!is.finite(score_sample)){
-          cat(sprintf("g=%d",g))
-          cat(sprintf("p=%d",p))
+          #cat(sprintf("g=%d",g))
+          #cat(sprintf("p=%d",p))
           flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
           if(!any(flag_finite)){
             score_sample <- 9
           }else{
             score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
           }
-          cat(sprintf("maxscore=%f",score_sample))
+          #cat(sprintf("maxscore=%f",score_sample))
         }
         score_obs = score_obs + score_sample
       }
@@ -537,8 +537,8 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   }
 
   if(p_class == "allTest"){
-
     ### beta binomial test to calculate p value and q ###
+    message("All five hypothesis test methods will be performed")
     sig_betabinomial <- as.data.frame(matrix(numeric(0),nrow = length(x_g),ncol = 3))
     colnames(sig_betabinomial) <- c("gene","p.btBinom","q.btBinom")
     sig_betabinomial$gene <- G$gene
@@ -712,7 +712,6 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
   ######### 2D projection to calculate p value and q ##########
 
   #PROJECTION
-  cat("Calculating p.value using 2D Projection method...")
   null_score_boost = 3
   min_effect_size =1.25
   convolution_numbins =1000
@@ -829,15 +828,15 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
       }
       score_sample = Sdeg[p,degree[p,1]+1,degree[p,2]+1]
       if(!is.finite(score_sample)){
-        cat(sprintf("g=%d",g))
-        cat(sprintf("p=%d",p))
+        #cat(sprintf("g=%d",g))
+        #cat(sprintf("p=%d",p))
         flag_finite <- is.finite(Sdeg[,degree[p,1]+1,degree[p,2]+1])
         if(!any(flag_finite)){
           score_sample <- 9
         }else{
           score_sample <- max(Sdeg[,degree[p,1]+1,degree[p,2]+1][flag_finite])
         }
-        cat(sprintf("maxscore=%f",score_sample))
+        #cat(sprintf("maxscore=%f",score_sample))
       }
       score_obs = score_obs + score_sample
     }
@@ -1068,6 +1067,7 @@ sigGenes <- function(BMR_out, p_class = "allTest",output_filestem = "output",sig
     #fill =c("cornflowerblue","green","yellow","darkorchid1","red")
     #cat.col =c("darkblue", "darkgreen", "orange","darkorchid4","black")
     setwd("..")
+    message("Driver gene identfication finished")
     return(sigGenes_final)
   }  # end of if(p_class == "all")
 } # of MutSig_runCV function
