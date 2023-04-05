@@ -187,11 +187,7 @@ if ("effect" %in% colnames(M)){
   if(length(bad)>0){
     warning("%d/%d mutations could not be mapped to
                     effect using mutation_type_dictionary_file",
-             length(bad),length(M$effect)
-    #cat(sprintf("WARNING: %d/%d mutations could not be mapped to
-    #                effect using mutation_type_dictionary_file: \n",
-    #            length(bad),length(M$effect)))
-
+             length(bad),length(M$effect))
     message("They will be removed from the analysis.")
     M <- M[-bad]
   }
