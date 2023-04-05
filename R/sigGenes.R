@@ -13,7 +13,7 @@
 #'
 #' @param BMR_out Data output by the BMR function.
 #' @param p_class "BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test;
-#' "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
+#' "LRT" represents likelihood ratio test; "CT" represents convolution test; "PJ" represents projection test
 #' method; "allTest" represents the mutual results of all methods.
 #' @param output_filestem Unified prefix of output data, could be modified as well
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant

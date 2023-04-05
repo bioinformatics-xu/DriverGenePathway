@@ -27,7 +27,7 @@ if(is.null(C)){
   # download and read coverage data
   cat("Download coverage file")
   download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/exome_full192.coverage.zip",
-                destfile = "exome_full192.coverage.txt.zip")
+                destfile = "exome_full192.coverage.txt.zip", method = "auto", timeout = 10000, quiet = FALSE)
   unzip("exome_full192.coverage.txt.zip", exdir = ".")
   file.remove("exome_full192.coverage.txt.zip")
   C <- as.data.frame(data.table::fread(file = "exome_full192.coverage.txt"))
@@ -36,21 +36,22 @@ if(is.null(C)){
 if(is.null(dict)){
   cat("Download dictionary file")
   download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/mutation_type_dictionary_file.txt",
-                destfile = "mutation_type_dictionary_file.txt")
+                destfile = "mutation_type_dictionary_file.txt", method = "auto", timeout = 10000, quiet = FALSE)
+
   dict <- as.data.frame(data.table::fread(file = "mutation_type_dictionary_file.txt"))
 }
 
 if(is.null(V)){
   cat("Download covariate file")
   download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/gene.covariates.txt",
-                destfile = "gene.covariates.txt")
+                destfile = "gene.covariates.txt", method = "auto", timeout = 10000, quiet = FALSE)
   V <- as.data.frame(data.table::fread(file = "gene.covariates.txt"))
 }
 
 if(is.null(chr_files_directory)){
   cat("Download chromosome files (about 900M), which will take some time")
   download.file("http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/chr_files_hg19.zip",
-                destfile = "chr_files_hg19.zip")
+                destfile = "chr_files_hg19.zip", method = "auto", timeout = 10000, quiet = FALSE)
   unzip("chr_files_hg19.zip", exdir = ".")
   file.remove("chr_files_hg19.zip")
   chr_files_directory = "chr_files_hg19"
