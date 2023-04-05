@@ -278,8 +278,7 @@ if(!("chr" %in% colnames(M)) || !("start" %in% colnames(M)) ||
   M$start <- as.numeric(M$start)
   bad <- which(is.nan(M$start))
   if(length(bad) > 0){
-    message(sprintf("%d/%d mutations had non-numeric Start_position.
-                  Excluding them from analysis.", length(bad),length(M$start)))
+    message(sprintf("%d/%d mutations had non-numeric Start_position, excluding them from analysis", length(bad),length(M$start)))
     M <- M[-bad]
   }
   if(nrow(M) == 0){
