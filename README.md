@@ -66,10 +66,9 @@ DriverGenes(Mutation=BRCAmutation)
 |sigThreshold|The threshhold of q-value to judge if the gene is significant.|
 
 
-#### Description of output files:
+#### Description of output:
 |Output file|Description|
 |----|----|
-|MutationCategories.txt| Information about selected mutation categories.|
 |output_filestem$+"_covaraite.txt"(output_covaraite.txt by default)| Filled covaraite.|
 |output_filestem$+"_mutations.txt"(output_mutations.txt by default)| Preprocessed mutation data corresponding to the selected categories.|
 |output_filestem$+"_coverage"(output_coverage.txt by default)| Preprocessed coverage data corresponding to the selected categories|
@@ -99,21 +98,18 @@ DriverPathway(mutation_matrix,
 
 |Parameters|Description|
 |----|----|
-|mutation_matrix|0-1 mutation matrix where rows represent patients, columns represent genes.|
+|mutation_matrix|0-1 mutation matrix where rows represent patients, columns represent genes or MAF file. If the mutation data is a MAF file, then the preprocessing procedure will be performed using coverage data, covariate data, mutation dictionary, and chr files directory, which can be specified by the user. The user should name these files "coverage.txt.$" for coverage data, "covariates.txt$" for covariate data, "dictionary file.txt$" for mutation dictionary, and "^chr files hg" for "chr files directory". If the specified named files can be found, they will be read and utilized to generate mutation matrix. If the files cannot be detected, the function will automatically download them from the MutSigCV website, which may take some time.|
 |driver_size|The size of identified driver gene set, defaulted to 3.|
 |pop_size|The population size of GA, defaulted to 200.|
 |iters|The iteration time of GA, defaulted to 500.|
 |permut_time|The times of permutation test, defaulted to 1000.|
-|outfile|The output file of driver gene set, defaulted to "denovoDriverPathway.txt".|
+|preprocess_bmr|The background mutation rate to preprocess MAF file to mutation matrix using binomial hypothesis testing.|
 
-#### Description of output files:
-|Output file|Description|
+#### Description of output:
+|Output|Description|
 |----|----|
-|denovoDriverPathway.txt|The identified driver gene set and statistical significance of permutation test.|
+|driverlist|A list including the mutation matrix, identified driver gene set, and p-value.|
 
-### The Default files are available in the following URL.
-
-.......
 
 ### Developer: 
 
