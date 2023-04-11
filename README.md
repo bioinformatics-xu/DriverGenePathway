@@ -17,17 +17,20 @@ DriverGene and DriverPathway are two main functions in DriverGenePathway to iden
 
 ### DriverGene
 
-#### Default data preparation:
+#### Run DriverGene with user-input preprocessing data:
 
-Download the default files from [data source](https://1drv.ms/u/s!AjcBl025xjDwbX8vyTEVxc4_Hpg?e=hnSlqR), and make sure the default files are in your working directory of Rstudio as follows.
+Users can download and input the necessary coverage, covariates, mutation dictionary and reference genome data applicable to their mutation data for preprocessing. For instance, users can download these files from MutSigCV and ensure that they are stored in the current working directory of R as shown below:
+
 ```
-Folder Structure of your working directory of Rstudio
+Folder Structure of current working directory of R
 |__ brca_maf.txt (example mutation data)
 |__ exome_full192.coverage.txt
 |__ gene.covariates.txt
 |__ mutation_type_dictionary_file.txt
 |__ chr_files_hg19
 ```
+
+Identify driver genes using DriverGene() function
 
 ```
 BRCAmutation <- as.data.frame(fread("brca_maf.txt"))
@@ -37,9 +40,10 @@ V <- as.data.frame(data.table::fread(file = "gene.covariates.txt"))
 DriverGenes(Mutation=BRCAmutation,Coverage=C,Covariate=V,MutationDict=dict, chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6, p_class="binomial", sigThreshold = 0.05)
 ```
 
-#### Run without default data preparation:
+#### Run DriverGene with default preprocessing data:
 
-If the default files for preprocessing are NULL, they will be automatically downloaded, which may take some time.
+
+If the default files for preprocessing are NULL, they will be automatically downloaded. However, note that this process may take some time. Once the necessary preprocessing data is ready, identifying driver genes can be easily conducted using the DriverGene() function as shown below:
 
 ```
 BRCAmutation <- fread("brca_maf.txt")
