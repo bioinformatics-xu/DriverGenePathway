@@ -28,9 +28,13 @@ Folder Structure of your working directory of Rstudio
 |__ mutation_type_dictionary_file.txt
 |__ chr_files_hg19
 ```
-If the default files are NULL, they will be automatically downloaded, which may take some time.
 
-#### Running command:
+DriverGenes(Mutation=BRCAmutation,Coverage="defaultCoverage",Covariate="defaultCovariate",MutationDict="defaultDict", chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6, p_class="binomial", sigThreshold = 0.05)
+
+#### Run without default data preparation:
+
+If the default files for preprocessing are NULL, they will be automatically downloaded, which may take some time.
+
 ```
 BRCAmutation <- fread("brca_maf.txt")
 DriverGenes(Mutation=BRCAmutation)
