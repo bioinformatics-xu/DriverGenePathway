@@ -1,4 +1,4 @@
-#' Identify driver genes
+#' Identify driver genes based on MutSigCV and statistical methods
 #'
 #' This function depends on a chromosome files folder, hg19 or hg18, which includes the txt files of each chromosome.
 #' This function first preprocesses input data via the preprocessing function.
@@ -17,8 +17,7 @@
 #' method; "allTest" represents the mutual results of all methods.
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant.
 #' @param output_filestem The parameters to name the output files, defaulted to "output".
-#' @return Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
-#' pdf files as well.
+#' @return Driver gene table.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @export
 DriverGene <- function(Mutation=NULL,Coverage=NULL,Covariate=NULL,MutationDict=NULL,

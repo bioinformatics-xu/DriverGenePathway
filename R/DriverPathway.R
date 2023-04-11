@@ -1,15 +1,16 @@
-#' Search driver pathway using a de novo method, AWRMP(https://www.frontiersin.org/articles/10.3389/fgene.2019.00233/full).
+#' Identify driver pathway using a de novo method, AWRMP(https://www.frontiersin.org/articles/10.3389/fgene.2019.00233/full).
 #'
 #' @param mutation_data 0-1 mutation matrix where rows represent patients, columns represent genes or MAF file.
-#' If mutation_data is MAF file, then preprocessing procedure will be performed using coverage data, covariate data, mutation dictionary, and chr_files_directory.
-#' These files can be input be users and named "coverage.txt.$" for coverage data, "covariates.txt$" for covariate data, "dictionary_file.txt$" for mutation dictionary, and "^chr_files_hg" for chr_files_directory.
-#' If these files cannot be detected, they will be downloaded from the MutSigCV website which will take some time.
+#' If the mutation data is a MAF file, then the preprocessing procedure will be performed using coverage data, covariate data, mutation dictionary, and chr files directory, which can be specified by the user.
+#' The user should name these files "coverage.txt.$" for coverage data, "covariates.txt$" for covariate data, "dictionary file.txt$" for mutation dictionary, and "^chr files hg" for "chr files directory".
+#' If the specified named files can be found, they will be read and utilized to generate mutation matrix.
+#' If the files cannot be detected, the function will automatically download them from the MutSigCV website, which may take some time.
 #' @param driver_size The size of identified driver gene set, defaulted to 3.
 #' @param pop_size The population size of GA which should be adjusted according the number of samples, defaulted to 200.
 #' @param iters The iteration time of GA, defaulted to 1000.
 #' @param permut_time The times of permutation test, defaulted to 1000.
-#' @param process_bmr The background mutation rate to preprocess MAF file to mutation matrix using MutsigCV1.0.
-#' @return Output of DriverPathway is a list including the mutation matrix, identified driver gene set, and p-value.
+#' @param process_bmr The background mutation rate to preprocess MAF file to mutation matrix using binomial hypothesis testing.
+#' @return A list including the mutation matrix, identified driver gene set, and p-value.
 #' @author Xiaolu Xu <lu.xu@@lnnu.edu.cn>
 #' @examples
 #' data(SampleMutationMatrix)

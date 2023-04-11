@@ -74,7 +74,7 @@ if(is.null(V)){
 }
 
 if(is.null(chr_files_directory)){
-  message("Download chromosome files (about 900M), which will take some time")
+  message("Download chromosome files (about 900M), which may take some time")
 
   url = "http://www.broadinstitute.org/cancer/cga/sites/default/files/data/tools/mutsig/reference_files/chr_files_hg19.zip"
   response <- GET(url, timeout(10000), progress())

@@ -2,7 +2,7 @@
 % Please edit documentation in R/DriverGene.R
 \name{DriverGene}
 \alias{DriverGene}
-\title{Identify driver genes}
+\title{Identify driver genes based on MutSigCV and statistical methods}
 \usage{
 DriverGene(
   Mutation = NULL,
@@ -13,7 +13,7 @@ DriverGene(
   categ_flag = NaN,
   bmr = 1.2e-06,
   output_filestem = "output",
-  p_class = "BB",
+  p_class = "allTest",
   sigThreshold = 0.05
 )
 }
@@ -41,8 +41,7 @@ method; "allTest" represents the mutual results of all methods.}
 \item{sigThreshold}{The threshhold of q-value to judge if the gene is significant.}
 }
 \value{
-Return of DriverGene function is driver gene table. Besides, output files contains txt files including the preprocessed mutation and coverage data, mutation categories, and significant driver genes. There are several plots output as
-pdf files as well.
+Driver gene table.
 }
 \description{
 This function depends on a chromosome files folder, hg19 or hg18, which includes the txt files of each chromosome.
