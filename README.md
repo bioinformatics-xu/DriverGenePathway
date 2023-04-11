@@ -54,16 +54,17 @@ DriverGenes(Mutation=BRCAmutation)
 
 |Parameters|Description|
 |----|----|
-|Mutation|Mutation maf data (mandatory).|
-|Coverage|Coverage raw data, read from exome_full192.coverage.txt in MutSigCV by default.|
-|Covariate|Covariate data, read from "gene.covariates.txt" in MutSigCV by default.|
-|MutationDict|Mutation dictionary to map Variant_Classification to mutation effect in mutation data, read from "mutation_type_dictionary_file.txt" in MutSigCV by default.|
-|chr_files_directory|Chromosome files directory, hg19 or hg38.|
-|categ_flag|Mutation category number, should be either NaN or numeric, default to be NaN(category number is set to 4, and Method3 is adopted).|
-|bmr|The default background mutation rate, 1.2e-6 by default.|
-|p_class|Hypothesis test methods. "binomial" represents binomial distribution test, which is default;"betabinomial" represents beta binomial distribution test;"fisher" represents Fisher combined P-value test;"LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents 2D-projection test; "allTest" represents the mutual results of all test methods.|
-|sigThreshold|The significance level for q-value to idenfity driver genes.|
-|output_filestem|The parameters to name the output files, defaulted to "output"|
+|Mutation|Mutation maf data, mandatory data.|
+|Coverage|Coverage raw data which can be input by users. By default, the function will automatically download exome_full192.coverage.txt from MutSigCV as Coverage.|
+|Covariate|Covariate data which can be input by users. By default, the function will automatically download "gene.covariates.txt" from MutSigCV as Covariate.|
+|MutationDict|Mutation dictionary to map Variant_Classification to mutation effect in mutation data. Be default, the function will automatically download "mutation_type_dictionary_file.txt" from MutSigCV as MutationDict.|
+|chr_files_directory|Chromosome files directory, hg19 or hg18, which can be input by users. By default, the function will automatically download "chr_files_hg19.zip" from MutSigCV as chr_files_directory.|
+|categ_flag|Mutation category number, should be either NaN or numeric, defaulted to NaN.(category number is set to 4, and Method3 is adopted).|
+|bmr|The default background mutation rate is 1.2e-6, and the value alters when function ends.|
+|output_filestem|The parameters to name the output files, defaulted to "output".|
+|p_class|Hypothesis test methods. "BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test; "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test method; "allTest" represents the mutual results of all methods.|
+|sigThreshold|The threshhold of q-value to judge if the gene is significant.|
+
 
 #### Description of output files:
 |Output file|Description|
