@@ -6,14 +6,6 @@ DriverGenePathway is free for non-commerical use only.
 
 ## Installation
 
-### Local Installation
-```
-Download DriverGenePathway package.
-Put DriverGenePathway package in your working directory of Rstudio.
-Run the following command in Rstudio console:
-install.packages("DriverGenePathway_1.0.0.tar.gz", repos = NULL, type = "source").
-```
-
 ### Github Installation
 ```
 library(devtools)
@@ -36,13 +28,12 @@ Folder Structure of your working directory of Rstudio
 |__ mutation_type_dictionary_file.txt
 |__ chr_files_hg19
 ```
+If the default files are NULL, they will be automatically downloaded, which may take some time.
 
 #### Running command:
 ```
 BRCAmutation <- fread("brca_maf.txt")
-DriverGenes(Mutation=BRCAmutation,Coverage="defaultCoverage",Covariate="defaultCovariate",MutationDict="defaultDict",
-                               chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6,
-                               p_class="binomial", sigThreshold = 0.05)
+DriverGenes(Mutation=BRCAmutation)
 ```                              
 
 #### Description of parameters:
@@ -73,7 +64,7 @@ DriverGenes(Mutation=BRCAmutation,Coverage="defaultCoverage",Covariate="defaultC
 
 #### Default data preparation:
 
-Download the default mutation matrix data and make sure the default file is in your working directory of Rstudio as follows.
+Mutation matrix or MAF.
 
 ```
 Folder Structure of your working directory of Rstudio
