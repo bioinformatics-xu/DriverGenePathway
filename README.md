@@ -29,7 +29,13 @@ Folder Structure of your working directory of Rstudio
 |__ chr_files_hg19
 ```
 
-DriverGenes(Mutation=BRCAmutation,Coverage="defaultCoverage",Covariate="defaultCovariate",MutationDict="defaultDict", chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6, p_class="binomial", sigThreshold = 0.05)
+```
+BRCAmutation <- as.data.frame(fread("brca_maf.txt"))
+C <- as.data.frame(data.table::fread(file = "exome_full192.coverage.txt"))
+dict <- as.data.frame(data.table::fread(file = "mutation_type_dictionary_file.txt"))
+V <- as.data.frame(data.table::fread(file = "gene.covariates.txt"))
+DriverGenes(Mutation=BRCAmutation,Coverage=C,Covariate=V,MutationDict=dict, chr_files_directory="chr_files_hg19",categ_flag=NaN, bmr=1.2e-6, p_class="binomial", sigThreshold = 0.05)
+```
 
 #### Run without default data preparation:
 
