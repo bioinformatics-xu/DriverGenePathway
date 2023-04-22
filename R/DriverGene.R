@@ -13,7 +13,7 @@
 #' @param categ_flag Mutation category number, should be either NaN or numeric, defaulted to NaN.
 #' @param bmr The default background mutation rate is 1.2e-6, and the value alters when function ends.
 #' @param p_class Hypothesis test methods. "BB" represents beta binomial distribution test; "FCPT" represents Fisher combined P-value test;
-#' "LRT" represents likelihood ratio test; "CT" represents convolution test; "projection" represents projection test
+#' "LRT" represents likelihood ratio test; "CT" represents convolution test; "PJ" represents projection test
 #' method; "allTest" represents the mutual results of all methods.
 #' @param sigThreshold The threshhold of q-value to judge if the gene is significant.
 #' @param output_filestem The parameters to name the output files, defaulted to "output".
