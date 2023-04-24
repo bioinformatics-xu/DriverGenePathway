@@ -15,6 +15,7 @@ plotEffect <- function(preOutM){
     ggplot2::geom_text(ggplot2::aes(label = geneNumber, vjust = -0.2, hjust = 0.5), size = 3)+
     ggplot2::theme(legend.position='none',axis.text.x = ggplot2::element_text(angle = 30, vjust = 0.85, hjust = 0.75))
   ggplot2::ggsave(pic2, file="EffectPlot.pdf", width=4, height=6)
+  ggplot2::ggsave(pic2, file="EffectPlot.png", width=4, height=6)
 }
 
 plotCategory <- function(preOutM){
@@ -31,6 +32,6 @@ plotCategory <- function(preOutM){
     ggplot2::geom_text(ggplot2::aes(label = geneNumber, vjust = -0.2, hjust = 0.5), size = 3)+
     ggplot2::theme(legend.position='none',axis.text.x = ggplot2::element_text(angle = 30, vjust = 0.85, hjust = 0.75))
   ggplot2::ggsave(pic1, file="CategoryPlot.pdf", width=4, height=6)
-
+  ggplot2::ggsave(pic2, file="CategoryPlot.png", width=4, height=6)
 }
 
