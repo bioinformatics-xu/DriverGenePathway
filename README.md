@@ -1,5 +1,5 @@
 # DriverGenePathway
-DriverGenePathway is an R pacakge to identify driver genes and driver pathways in cancer based on MutSigCV and statistical methods. In addition, the DriverGenePathway webserver (http://www.DriverGenePathwayAPP.com) has been created to provide a user-friendly interface for users who may not be familiar with R programming. The webserver enables users to upload their data using a simple interface and then perform analyses using the same parameters and algorithms as those used in the R package.
+DriverGenePathway is an R package designed to identify driver genes and pathways in cancer using MutSigCV and statistical methods. To provide a user-friendly interface for those who may not be familiar with R programming, we have also created the DriverGenePathway webserver (http://www.DriverGenePathwayAPP.com). The webserver allows users to upload their data using a simple interface and perform analyses using the same parameters and algorithms as those used in the R package.
 
 ## Access
 DriverGenePathway is free for non-commerical use only.
